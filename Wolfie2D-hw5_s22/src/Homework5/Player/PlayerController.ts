@@ -100,7 +100,7 @@ export default class PlayerController extends StateMachineAI {
         super.changeState(stateName);
     }
 
-    // HOMEWORK 5 - TODO
+    // HOMEWORK 5 - THIS IS WHERE WE WILL IMPLEMENT TAKING DAMAGE ON THE BACKGROUND SPIKES
     /**
      * We want to detect when our player is moving over one of the switches in the world, and along with the sound
      * and label changes, we also visually want to change the tile.

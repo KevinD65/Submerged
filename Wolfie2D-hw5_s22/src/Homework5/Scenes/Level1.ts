@@ -6,22 +6,15 @@ import GameLevel from "./GameLevel";
 import Level2 from "./Level2";
 
 export default class Level1 extends GameLevel {
-    
-    // HOMEWORK 5 - TODO
-    /**
-     * Add your balloon pop sound here and use it throughout the code
-     */
     loadScene(): void {
         // Load resources
-        this.load.tilemap("level1", "hw5_assets/tilemaps/level1.json");
+        this.load.tilemap("level1", "hw5_assets/tilemaps/SubmergedMap1.tmj");
         this.load.spritesheet("player", "hw5_assets/spritesheets/spike.json");
         this.load.spritesheet("red", "hw5_assets/spritesheets/redBalloon.json");
         this.load.spritesheet("blue", "hw5_assets/spritesheets/blueBalloon.json");
         this.load.audio("jump", "hw5_assets/sounds/jump.wav");
         this.load.audio("switch", "hw5_assets/sounds/switch.wav");
         this.load.audio("player_death", "hw5_assets/sounds/player_death.wav");
-        // HOMEWORK 5 - TODO
-        // You'll want to change this to your level music
         this.load.audio("level_music", "hw5_assets/music/menu.mp3");
     }
 
@@ -44,9 +37,9 @@ export default class Level1 extends GameLevel {
     startScene(): void {
         // Add the level 1 tilemap
         this.add.tilemap("level1", new Vec2(2, 2));
-        this.viewport.setBounds(0, 0, 64*32, 20*32);
+        this.viewport.setBounds(0, 0, 100*256, 100*256);
 
-        this.playerSpawn = new Vec2(5*32, 14*32);
+        this.playerSpawn = new Vec2(3*256, 5*256);
 
         // Set the total switches and balloons in the level
         this.totalSwitches = 4;
@@ -59,6 +52,8 @@ export default class Level1 extends GameLevel {
 
         this.nextLevel = Level2;
 
+
+        /* REMOVE THIS FOR NOW! WILL REPURPOSE BALLOONS FOR MINES!!!!!!
         // Add balloons of various types, just red and blue for the first level
         for(let pos of [new Vec2(18, 8), new Vec2(25, 3), new Vec2(52, 5)]){
             this.addBalloon("red", pos, {color: HW5_Color.RED});
@@ -67,6 +62,8 @@ export default class Level1 extends GameLevel {
         for(let pos of [new Vec2(20, 3), new Vec2(41,4), new Vec2(3, 4)]){
             this.addBalloon("blue", pos, {color: HW5_Color.BLUE});
         }
+        */
+
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
     }
 

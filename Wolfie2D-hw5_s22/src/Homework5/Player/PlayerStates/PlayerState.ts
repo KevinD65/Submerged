@@ -11,7 +11,7 @@ import PlayerController from "../PlayerController";
 
 export default abstract class PlayerState extends State {
 	owner: GameNode;
-	gravity: number = 1000;
+	gravity: number = 100; //slowed down gravity for underwater (need event handler for detecting boss level so that gravity changes)
 	parent: PlayerController;
 	positionTimer: Timer;
 
