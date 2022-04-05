@@ -45,10 +45,10 @@ export default class MainMenu extends Scene {
 
         this.bg1 = this.add.sprite("splash", "background");
 		this.bg2 = this.add.sprite("splash", "background");
-		this.bg1.scale.set(1.5, 1.5);
+		this.bg1.scale.set(2.5, 2);
 		this.bg1.position.copy(this.viewport.getCenter());
 
-		this.bg2.scale.set(1.5, 1.5);
+		this.bg2.scale.set(2.5, 2);
 		this.bg2.position = this.bg1.position.clone();
 		this.bg2.position.add(this.bg1.sizeWithZoom.scale(0, -2));
 
