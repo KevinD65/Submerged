@@ -7,7 +7,7 @@ export default class Fall extends InAir {
     owner: AnimatedSprite;
 
 	onEnter(options: Record<string, any>): void {
-		this.owner.animation.play("swim_down");
+		this.owner.animation.play("swim_down",true);
 
 		/*
 		if (this.parent.suitColor == HW5_Color.RED){ 

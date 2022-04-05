@@ -9,27 +9,31 @@ export default class Idle extends OnGround {
 
 	onEnter(options: Record<string, any>): void {
 		this.parent.speed = this.parent.MIN_SPEED;
+		if(this.owner.inWater)
+		{
+			this.owner.animation.play("swim_down");
+		}
 	}
 
 	
 	updateSuit() {
-		if(this.parent.velocity.y > 0 && this.parent.velocity.x == 0){ //straight down
+		/*if(this.parent.velocity.y > 0 && this.parent.velocity.x == 0){ //straight down
 			this.owner.animation.playIfNotAlready("swim_down");
 		}
 		else if(this.parent.velocity.y < 0 && this.parent.velocity.x == 0){ //straight up
 			this.owner.animation.playIfNotAlready("swim_up");
 		}
 		else if(this.parent.velocity.x > 0){ //swim right
-			this.owner.animation.playIfNotAlready("swim_right");
+			this.owner.animation.playIfNotAlready("swim_right",true);
 		}
 		else if(this.parent.velocity.x < 0){ //swim left
-			this.owner.animation.playIfNotAlready("swim_left");
+			this.owner.animation.playIfNotAlready("swim_right",true);
 		}
 		else{
 			this.owner.animation.play("idle");
 		}
 
-		/*
+		
 		if (this.parent.suitColor == HW5_Color.RED){ 
 			this.owner.animation.playIfNotAlready("RED_IDLE", true);
 		}

@@ -12,10 +12,17 @@ export default class Jump extends InAir {
 
 	onEnter(options: Record<string, any>): void {
 		this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "jump", loop: false, holdReference: false});
+		if(this.parent.velocity.x == 0)
+		{
+			this.owner.animation.play("swim_up", true);
+		}
+		else{
+			this.owner.animation.play("swim_right", true);
+		}
 	}
 
 	updateSuit() {
-		this.owner.animation.play("swim_up", true);
+		
 	}
 
 	update(deltaT: number): void {
@@ -35,7 +42,14 @@ export default class Jump extends InAir {
 			console.log("SWIMMING UP");
 			this.parent.velocity.y = -1000;
 			this.owner.move(this.parent.velocity.scaled(deltaT));
-			this.finished(PlayerStates.IDLE);
+			if(this.parent.velocity.x == 0)
+			{
+				this.finished(PlayerStates.IDLE);
+			}
+			else
+			{
+				this.finished(PlayerStates.WALK);
+			}
 		}
 	}
 

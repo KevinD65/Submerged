@@ -10,6 +10,7 @@ export default class Walk extends OnGround {
 
 	onEnter(options: Record<string, any>): void {
 		this.parent.speed = this.parent.MIN_SPEED;
+		this.owner.animation.playIfNotAlready("swim_right",true);
 	}
 
 	updateSuit() {
@@ -42,7 +43,15 @@ export default class Walk extends OnGround {
 			this.parent.velocity.x = dir.x * 1000;
 			//this.parent.velocity.y = this.parent.velocity;
 			this.owner.move(this.parent.velocity.scaled(deltaT));
-			this.finished(PlayerStates.IDLE);
+			if(Input.isJustPressed("jump")){
+				console.log("TRANBADNWOJKNDW");
+				//this.parent.velocity.y = -1500;
+				this.finished("jump");
+			}
+			if(dir.isZero())
+			{
+				this.finished(PlayerStates.IDLE);
+			}
 		}
 	}
 
