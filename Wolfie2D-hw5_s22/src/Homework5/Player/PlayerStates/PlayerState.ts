@@ -18,7 +18,7 @@ export default abstract class PlayerState extends State {
 	constructor(parent: StateMachine, owner: GameNode){
 		super(parent);
 		this.owner = owner;
-		this.gravity = this.owner.inWater ? 1500 : 2000; //PLAY WITH GRAVITY NUMBERS
+		this.gravity = this.owner.inWater ? 800 : 1500; //PLAY WITH GRAVITY NUMBERS
 		this.positionTimer = new Timer(250);
 		this.positionTimer.start();
 	}

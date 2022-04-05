@@ -19,6 +19,7 @@ export default abstract class InAir extends PlayerState {
             }
         }
         else{ //IF WE ARE FALLING DOWNWARDS IN THE WATER, LET THE DIVER GO INTO AN IDLE STATE
+            console.log("IN THE AIR");
             this.finished(PlayerStates.IDLE);
         }
     }

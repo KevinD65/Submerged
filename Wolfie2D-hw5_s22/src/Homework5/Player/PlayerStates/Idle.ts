@@ -13,6 +13,23 @@ export default class Idle extends OnGround {
 
 	
 	updateSuit() {
+		if(this.parent.velocity.y > 0 && this.parent.velocity.x == 0){ //straight down
+			this.owner.animation.playIfNotAlready("swim_down");
+		}
+		else if(this.parent.velocity.y < 0 && this.parent.velocity.x == 0){ //straight up
+			this.owner.animation.playIfNotAlready("swim_up");
+		}
+		else if(this.parent.velocity.x > 0){ //swim right
+			this.owner.animation.playIfNotAlready("swim_right");
+		}
+		else if(this.parent.velocity.x < 0){ //swim left
+			this.owner.animation.playIfNotAlready("swim_left");
+		}
+		else{
+			this.owner.animation.play("idle");
+		}
+
+		/*
 		if (this.parent.suitColor == HW5_Color.RED){ 
 			this.owner.animation.playIfNotAlready("RED_IDLE", true);
 		}
@@ -21,7 +38,7 @@ export default class Idle extends OnGround {
 		}
 		else if (this.parent.suitColor == HW5_Color.BLUE){
 			this.owner.animation.playIfNotAlready("BLUE_IDLE", true);
-		}
+		}*/
 	}
 
 	update(deltaT: number): void {
@@ -50,8 +67,15 @@ export default class Idle extends OnGround {
 					this.finished(PlayerStates.WALK);
 				}
 			}
+			else if(Input.isJustPressed("jump")){
+				console.log("TRANBADNWOJKNDW");
+				//this.parent.velocity.y = -1500;
+				this.finished("jump");
+			}
 			else{
-				this.parent.velocity.y = 500;
+				console.log("IDLE");
+				this.parent.velocity.x = dir.x * this.parent.speed;
+				this.parent.velocity.y = 250;
 				this.owner.move(this.parent.velocity.scaled(deltaT));
 			}
 			

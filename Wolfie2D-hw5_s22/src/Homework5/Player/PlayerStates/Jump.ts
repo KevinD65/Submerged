@@ -15,15 +15,7 @@ export default class Jump extends InAir {
 	}
 
 	updateSuit() {
-		if (this.parent.suitColor == HW5_Color.RED){ 
-			this.owner.animation.play("RED_JUMP", true);
-		}
-		else if (this.parent.suitColor == HW5_Color.GREEN){
-			this.owner.animation.play("GREEN_JUMP", true);
-		}
-		else if (this.parent.suitColor == HW5_Color.BLUE){
-			this.owner.animation.play("BLUE_JUMP", true);
-		}
+		this.owner.animation.play("swim_up", true);
 	}
 
 	update(deltaT: number): void {
@@ -33,13 +25,16 @@ export default class Jump extends InAir {
 			this.parent.velocity.y = 0;
 		}
 
-		console.log("SHOOOOOO");
-
+		console.log("WHERE?");
 		// If we're falling (in land level), go to the fall state
 		if(this.parent.velocity.y >= 0 && !this.owner.inWater){
+			console.log("FALLING");
 			this.finished(PlayerStates.FALL);
 		}
 		else{
+			console.log("SWIMMING UP");
+			this.parent.velocity.y = -1000;
+			this.owner.move(this.parent.velocity.scaled(deltaT));
 			this.finished(PlayerStates.IDLE);
 		}
 	}
