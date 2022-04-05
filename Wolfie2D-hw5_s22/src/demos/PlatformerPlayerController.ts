@@ -15,6 +15,7 @@ export default class PlayerController extends ControllerAI {
         this.owner = owner;
         this.jumpSoundKey = options.jumpSoundKey;
         this.emitter = new Emitter();
+        console.log("INITIALIZED");
     }
 
     activate(options: Record<string, any>): void {}
@@ -24,39 +25,79 @@ export default class PlayerController extends ControllerAI {
     }
 
     update(deltaT: number): void {
-        // Get the direction from key presses
-        const x = (Input.isPressed("left") ? -1 : 0) + (Input.isPressed("right") ? 1 : 0);
-        
-        // Get last velocity and override x
-        const velocity = this.owner.getLastVelocity();
-        velocity.x = x * 100 * deltaT;
+        /*
+        console.log(this.owner.inWater);
+        if(this.owner.inWater){
+            // Get the direction from key presses
+            const x = (Input.isPressed("left") ? -1 : 0) + (Input.isPressed("right") ? 1 : 0);
+            
+            // Get last velocity and override x
+            const velocity = this.owner.getLastVelocity();
+            velocity.x = x * 700 * deltaT;
 
-        // Check for jump condition
-        if(this.owner.onGround && Input.isJustPressed("jump")){
-            // We are jumping
-            velocity.y = -250*deltaT;
+            // Check for swim up condition
+            if(Input.isJustPressed("jump")){
+                // We are swimming upwards
+                console.log("YURYURYUR");
+                velocity.y = -400*deltaT;
 
-            // Loop our jump animation
-            this.owner.animation.play("JUMP", true);
+                // Play swim up condition
+                //this.owner.animation.play("JUMP", true);
 
-            // Play the jump sound
-            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.jumpSoundKey, loop: false});
-        } else {
-            velocity.y += 10*deltaT;
-        }
-
-        if(this.owner.onGround && !Input.isJustPressed("jump")){
-            // If we're on the ground, but aren't jumping, show walk animation
-            if(velocity.x === 0){
-                    this.owner.animation.playIfNotAlready("IDLE", true);
+                // Play the jump sound
+                //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.jumpSoundKey, loop: false});
             } else {
-                this.owner.animation.playIfNotAlready("WALK", true);
+                velocity.y += 50*deltaT;
             }
-        }
 
-        // If we're walking left, flip the sprite
-        this.owner.invertX = velocity.x < 0;
-        
-        this.owner.move(velocity);
+            if(!Input.isJustPressed("jump")){
+                // If we aren't jumping, show swim animation
+                if(velocity.x === 0){
+                        this.owner.animation.playIfNotAlready("IDLE", true);
+                } else {
+                    this.owner.animation.playIfNotAlready("WALK", true);
+                }
+            }
+
+            // If we're walking left, flip the sprite
+            this.owner.invertX = velocity.x < 0;
+            
+            this.owner.move(velocity);
+        }
+        else{ //IF THE OWNER IS ON LAND (BOSS LEVEL)
+            const x = (Input.isPressed("left") ? -1 : 0) + (Input.isPressed("right") ? 1 : 0);
+            
+            // Get last velocity and override x
+            const velocity = this.owner.getLastVelocity();
+            velocity.x = x * 100 * deltaT;
+
+            // Check for jump condition
+            if(this.owner.onGround && Input.isJustPressed("jump")){
+                // We are jumping
+                velocity.y = -250*deltaT;
+
+                // Loop our jump animation
+                this.owner.animation.play("JUMP", true);
+
+                // Play the jump sound
+                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: this.jumpSoundKey, loop: false});
+            } else {
+                velocity.y += 10*deltaT;
+            }
+
+            if(this.owner.onGround && !Input.isJustPressed("jump")){
+                // If we're on the ground, but aren't jumping, show walk animation
+                if(velocity.x === 0){
+                        this.owner.animation.playIfNotAlready("IDLE", true);
+                } else {
+                    this.owner.animation.playIfNotAlready("WALK", true);
+                }
+            }
+
+            // If we're walking left, flip the sprite
+            this.owner.invertX = velocity.x < 0;
+            
+            this.owner.move(velocity);
+        }*/
     }
 }

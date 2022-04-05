@@ -112,6 +112,7 @@ export default class PlayerController extends StateMachineAI {
      * 
      */
     update(deltaT: number): void {
+        console.log("HERe");
 		super.update(deltaT);
 
 		if(this.currentState instanceof Jump){

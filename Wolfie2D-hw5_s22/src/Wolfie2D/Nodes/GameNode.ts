@@ -53,6 +53,7 @@ export default abstract class GameNode implements Positioned, Unique, Updateable
 	group: number;
 	isPlayer: boolean;
 	isColliding: boolean = false;
+	inWater: boolean = false;
 
 	/*---------- ACTOR ----------*/
 	_ai: AI | GoapAI;

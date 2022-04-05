@@ -64,6 +64,9 @@ export default class GameLevel extends Scene {
     protected switchLabel: Label;
     protected switchesPressed: number;
 
+    // Boolean determining whether or not this is a water level
+    protected waterLevel: boolean;
+
     startScene(): void {
         this.balloonsPopped = 0;
         this.switchesPressed = 0;
@@ -240,7 +243,7 @@ export default class GameLevel extends Scene {
      * Initializes the viewport
      */
     protected initViewport(): void {
-        this.viewport.setZoomLevel(2);
+        this.viewport.setZoomLevel(1);
     }
 
     /**
@@ -348,6 +351,7 @@ export default class GameLevel extends Scene {
         }
         this.player.position.copy(this.playerSpawn);
         this.player.addPhysics(new AABB(Vec2.ZERO, new Vec2(14, 14)));
+        this.player.inWater = true;
         this.player.colliderOffset.set(0, 2);
         this.player.addAI(PlayerController, {playerType: "platformer", tilemap: "Main", color: HW5_Color.RED});
 

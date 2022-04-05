@@ -29,17 +29,33 @@ export default class Idle extends OnGround {
 
 		let dir = this.getInputDirection();
 
-		if(!dir.isZero() && dir.y === 0){
-			if(Input.isPressed("run")){
-				this.finished(PlayerStates.RUN);
-			} else {
-				this.finished(PlayerStates.WALK);
+		if(!this.owner.inWater){ //IF WE ARE IN A LAND LEVEL...
+			if(!dir.isZero() && dir.y === 0){
+				if(Input.isPressed("run")){
+					this.finished(PlayerStates.RUN);
+				} else {
+					this.finished(PlayerStates.WALK);
+				}
 			}
-		}
-		
-		this.parent.velocity.x = 0;
+			
+			this.parent.velocity.x = 0;
 
-		this.owner.move(this.parent.velocity.scaled(deltaT));
+			this.owner.move(this.parent.velocity.scaled(deltaT));
+		}
+		else{ //IF WE ARE IN A WATER LEVEL...
+			if(!dir.isZero() && dir.y === 0){ //MOVING ACROSS THE WATER FLOOR
+				if(Input.isPressed("run")){
+					this.finished(PlayerStates.RUN);
+				} else {
+					this.finished(PlayerStates.WALK);
+				}
+			}
+			else{
+				this.parent.velocity.y = 500;
+				this.owner.move(this.parent.velocity.scaled(deltaT));
+			}
+			
+		}
 	}
 
 	onExit(): Record<string, any> {

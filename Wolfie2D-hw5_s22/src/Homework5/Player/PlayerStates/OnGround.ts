@@ -23,12 +23,28 @@ export default class OnGround extends PlayerState {
 		// we're moving left or right
 		if(Input.isJustPressed("jump")){
 			this.finished("jump");
-			this.parent.velocity.y = -500;
+			if(this.owner.inWater){ //IF IN WATER LEVEL, MOVE UPWARDS SLOWER
+				this.parent.velocity.y = -1000; //reduced upwards burst
+				if(!this.owner.onGround){
+					this.finished("fall");
+				}
+			}
+			else{ //IF ON GROUND LEVEL, MOVE UPWARDS AND HAVE NORMAL ANIMATIONS
+				if(this.parent.velocity.x !== 0){
+					this.owner.tweens.play("flip");
+				}
+				this.parent.velocity.y = -1500;
+				if(!this.owner.onGround){
+					this.finished("fall");
+				}
+			}
+			/*
 			if(this.parent.velocity.x !== 0){
 				this.owner.tweens.play("flip");
-			}
+			}*/
+		/*
 		} else if(!this.owner.onGround){
-			this.finished("fall");
+			this.finished("fall");*/
 		}
 	}
 

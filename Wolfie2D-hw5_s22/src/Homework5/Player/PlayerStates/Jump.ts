@@ -33,9 +33,14 @@ export default class Jump extends InAir {
 			this.parent.velocity.y = 0;
 		}
 
-		// If we're falling, go to the fall state
-		if(this.parent.velocity.y >= 0){
+		console.log("SHOOOOOO");
+
+		// If we're falling (in land level), go to the fall state
+		if(this.parent.velocity.y >= 0 && !this.owner.inWater){
 			this.finished(PlayerStates.FALL);
+		}
+		else{
+			this.finished(PlayerStates.IDLE);
 		}
 	}
 

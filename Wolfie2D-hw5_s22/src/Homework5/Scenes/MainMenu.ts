@@ -267,9 +267,22 @@ export default class MainMenu extends Scene {
         back3.font = "PixelSimple";
         back3.textColor = Color.fromStringHex("BB0070");
 
+        //THIS IS NEEDED FOR COLLISION DETECTION
+        let sceneOptions = {
+            physics: {
+                groupNames: ["ground", "player", "balloon"],
+                collisions:
+                [
+                    [0, 1, 1],
+                    [1, 0, 0],
+                    [1, 0, 0]
+                ]
+            }
+        }
+
         //Button Clicks
         level1.onClick = () => {
-            this.sceneManager.changeToScene(Level1, {}, {});
+            this.sceneManager.changeToScene(Level1, {}, sceneOptions);
         }
 
         back3.onClick = () => {

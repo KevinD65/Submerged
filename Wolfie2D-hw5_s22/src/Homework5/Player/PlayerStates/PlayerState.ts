@@ -11,13 +11,14 @@ import PlayerController from "../PlayerController";
 
 export default abstract class PlayerState extends State {
 	owner: GameNode;
-	gravity: number = 100; //slowed down gravity for underwater (need event handler for detecting boss level so that gravity changes)
+	gravity: number; //slowed down gravity for underwater (need event handler for detecting boss level so that gravity changes)
 	parent: PlayerController;
 	positionTimer: Timer;
 
 	constructor(parent: StateMachine, owner: GameNode){
 		super(parent);
 		this.owner = owner;
+		this.gravity = this.owner.inWater ? 1500 : 2000; //PLAY WITH GRAVITY NUMBERS
 		this.positionTimer = new Timer(250);
 		this.positionTimer.start();
 	}
