@@ -1,8 +1,8 @@
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
-import BalloonState from "./BalloonState";
+import MineState from "./MineState";
 
-export default class Sinking extends BalloonState {
+export default class Sinking extends MineState {
 	
 	onEnter(): void {
         this.gravity = this.parent.gravity;

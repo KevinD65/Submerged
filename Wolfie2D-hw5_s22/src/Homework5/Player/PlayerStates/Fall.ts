@@ -8,17 +8,6 @@ export default class Fall extends InAir {
 
 	onEnter(options: Record<string, any>): void {
 		this.owner.animation.play("swim_down",true);
-
-		/*
-		if (this.parent.suitColor == HW5_Color.RED){ 
-			this.owner.animation.play("RED_FALL", true);
-		}
-		else if (this.parent.suitColor == HW5_Color.GREEN){
-			this.owner.animation.play("GREEN_FALL", true);
-		}
-		else if (this.parent.suitColor == HW5_Color.BLUE){
-			this.owner.animation.play("BLUE_FALL", true);
-		}*/
 	}
 
     onExit(): Record<string, any> {

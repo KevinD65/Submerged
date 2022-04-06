@@ -22,13 +22,13 @@ export default class OnGround extends PlayerState {
 			(<Sprite>this.owner).invertX = MathUtils.sign(direction.x) < 0;
 		}
 
-		console.log("ON GROUND");
+		//console.log("ON GROUND");
 
 		// If we jump, move to the Jump state, give a burst of upwards velocity, and play our flip tween animation if 
 		if(Input.isJustPressed("jump")){
 			this.finished("jump");
 			if(this.owner.inWater){ //IF IN WATER LEVEL, MOVE UPWARDS SLOWER
-				this.parent.velocity.y = -1000; //reduced upwards burst
+				//this.parent.velocity.y = -100; //reduced upwards burst
 				if(!this.owner.onGround){
 					this.finished(PlayerStates.IDLE);
 				}
@@ -37,7 +37,7 @@ export default class OnGround extends PlayerState {
 				if(this.parent.velocity.x !== 0){
 					this.owner.tweens.play("flip");
 				}
-				this.parent.velocity.y = -1500;
+				//this.parent.velocity.y = -1500;
 				if(!this.owner.onGround){
 					this.finished("fall");
 				}

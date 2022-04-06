@@ -14,7 +14,7 @@ import Scene from "../../Wolfie2D/Scene/Scene";
 import Timer from "../../Wolfie2D/Timing/Timer";
 import Color from "../../Wolfie2D/Utils/Color";
 import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
-import BalloonController from "../Enemies/BalloonController";
+import MineController from "../Enemies/MineController";
 import { HW5_Color } from "../hw5_color";
 import { HW5_Events } from "../hw5_enums";
 import HW5_ParticleSystem from "../HW5_ParticleSystem";
@@ -35,8 +35,8 @@ export default class GameLevel extends Scene {
     protected respawnTimer: Timer;
 
     // Labels for the UI
-    protected static livesCount: number = 3;
-    protected livesCountLabel: Label;
+    protected static health: number = 3;
+    protected healthLabel: Label;
 
     // Stuff to end the level and go to the next level
     protected levelEndArea: Rect;
@@ -80,7 +80,7 @@ export default class GameLevel extends Scene {
 
         // Initialize the timers
         this.respawnTimer = new Timer(1000, () => {
-            if(GameLevel.livesCount === 0){
+            if(GameLevel.health === 0){
                 this.sceneManager.changeToScene(MainMenu);
             } else {
                 this.respawnPlayer();
@@ -121,23 +121,23 @@ export default class GameLevel extends Scene {
                     }
                     break;
 
-                case HW5_Events.PLAYER_HIT_BALLOON:
+                case HW5_Events.PLAYER_HIT_MINE:
                     {
                         let node = this.sceneGraph.getNode(event.data.get("node"));
                         let other = this.sceneGraph.getNode(event.data.get("other"));
 
                         if(node === this.player){
-                            // Node is player, other is balloon
-                            this.handlePlayerBalloonCollision(<AnimatedSprite>node, <AnimatedSprite>other);
+                            // Node is player, other is mine
+                            this.handlePlayerMineCollision(<AnimatedSprite>node, <AnimatedSprite>other);
                         } else {
-                            // Other is player, node is balloon
-                            this.handlePlayerBalloonCollision(<AnimatedSprite>other,<AnimatedSprite>node);
+                            // Other is player, node is mine
+                            this.handlePlayerMineCollision(<AnimatedSprite>other,<AnimatedSprite>node);
 
                         }
                     }
                     break;
 
-                case HW5_Events.BALLOON_POPPED:
+                case HW5_Events.MINE_EXPLODED:
                     {
                         // An balloon collided with the player, destroy it and use the particle system
                         this.balloonsPopped++;
@@ -146,10 +146,10 @@ export default class GameLevel extends Scene {
                         
                         // Set mass based on color
                         let particleMass = 0;
-                        if ((<BalloonController>node._ai).color == HW5_Color.RED) {
+                        if ((<MineController>node._ai).color == HW5_Color.RED) {
                             particleMass = 1;
                         }
-                        else if ((<BalloonController>node._ai).color == HW5_Color.GREEN) {
+                        else if ((<MineController>node._ai).color == HW5_Color.GREEN) {
                             particleMass = 2;
                         }
                         else {
@@ -162,14 +162,13 @@ export default class GameLevel extends Scene {
                     
                 case HW5_Events.PLAYER_ENTERED_LEVEL_END:
                     {
-                        //Check if the player has pressed all the switches and popped all of the balloons
-                        if (this.switchesPressed >= this.totalSwitches && this.balloonsPopped >= this.totalBalloons){
-                            if(!this.levelEndTimer.hasRun() && this.levelEndTimer.isStopped()){
-                                // The player has reached the end of the level
-                                this.levelEndTimer.start();
-                                this.levelEndLabel.tweens.play("slideIn");
-                            }
+                        console.log("LEVEL END FIRED");
+                        if(!this.levelEndTimer.hasRun() && this.levelEndTimer.isStopped()){
+                            // The player has reached the end of the level
+                            this.levelEndTimer.start();
+                            this.levelEndLabel.tweens.play("slideIn");
                         }
+                        
                     }
                     break;
 
@@ -186,7 +185,7 @@ export default class GameLevel extends Scene {
                         if(this.nextLevel){
                             let sceneOptions = {
                                 physics: {
-                                    groupNames: ["ground", "player", "balloon"],
+                                    groupNames: ["ground", "player", "mine"],
                                     collisions:
                                     [
                                         [0, 1, 1],
@@ -252,8 +251,8 @@ export default class GameLevel extends Scene {
     protected subscribeToEvents(){
         this.receiver.subscribe([
             HW5_Events.PLAYER_HIT_SWITCH,
-            HW5_Events.PLAYER_HIT_BALLOON,
-            HW5_Events.BALLOON_POPPED,
+            HW5_Events.PLAYER_HIT_MINE,
+            HW5_Events.MINE_EXPLODED,
             HW5_Events.PLAYER_ENTERED_LEVEL_END,
             HW5_Events.LEVEL_START,
             HW5_Events.LEVEL_END,
@@ -266,21 +265,22 @@ export default class GameLevel extends Scene {
      */
     protected addUI(){
         // In-game labels
+        /*
         this.balloonLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(80, 30), text: "Balloons Left: " + (this.totalBalloons - this.balloonsPopped)});
         this.balloonLabel.textColor = Color.BLACK
         this.balloonLabel.font = "PixelSimple";
 
         this.switchLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(80, 50), text: "Switches Left: " + (this.totalSwitches - this.switchesPressed)});
         this.switchLabel.textColor = Color.BLACK;
-        this.switchLabel.font = "PixelSimple";
+        this.switchLabel.font = "PixelSimple";*/
 
-        this.livesCountLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(500, 30), text: "Lives: " + GameLevel.livesCount});
-        this.livesCountLabel.textColor = Color.BLACK;
-        this.livesCountLabel.font = "PixelSimple";
+        this.healthLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(500, 30), text: "Health: " + GameLevel.health});
+        this.healthLabel.textColor = Color.BLACK;
+        this.healthLabel.font = "PixelSimple";
 
         // End of level label (start off screen)
-        this.levelEndLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(-300, 200), text: "Level Complete"});
-        this.levelEndLabel.size.set(1200, 60);
+        this.levelEndLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(-1000, 500), text: "Level Complete"});
+        this.levelEndLabel.size.set(1800, 100);
         this.levelEndLabel.borderRadius = 0;
         this.levelEndLabel.backgroundColor = new Color(34, 32, 52);
         this.levelEndLabel.textColor = Color.WHITE;
@@ -294,8 +294,8 @@ export default class GameLevel extends Scene {
             effects: [
                 {
                     property: TweenableProperties.posX,
-                    start: -300,
-                    end: 300,
+                    start: -1000,
+                    end: 1100,
                     ease: EaseFunctionType.OUT_SINE
                 }
             ]
@@ -344,7 +344,7 @@ export default class GameLevel extends Scene {
     protected initPlayer(): void {
         // Add the player
         this.player = this.add.animatedSprite("player", "primary");
-        this.player.scale.set(2, 2);
+        //this.player.scale.set(2, 2);
         if(!this.playerSpawn){
             console.warn("Player spawn was never set - setting spawn to (0, 0)");
             this.playerSpawn = Vec2.ZERO;
@@ -364,72 +364,71 @@ export default class GameLevel extends Scene {
      * Initializes the level end area
      */
     protected addLevelEnd(startingTile: Vec2, size: Vec2): void {
-        this.levelEndArea = <Rect>this.add.graphic(GraphicType.RECT, "primary", {position: startingTile.scale(32), size: size.scale(32)});
+        this.levelEndArea = <Rect>this.add.graphic(GraphicType.RECT, "primary", {position: startingTile.scale(128), size: size.scale(128)});
         this.levelEndArea.addPhysics(undefined, undefined, false, true);
         this.levelEndArea.setTrigger("player", HW5_Events.PLAYER_ENTERED_LEVEL_END, null);
         this.levelEndArea.color = new Color(0, 0, 0, 0);
     }
 
-    // HOMEWORK 5 - TODO
-    /*
-        Make sure balloons are being set up properly to have triggers so that when they collide
-        with players, they send out a trigger event.
-
-        Look at the levelEndArea trigger for reference.
-    */
     /**
-     * Adds an balloon into the game
-     * @param spriteKey The key of the balloon sprite
-     * @param tilePos The tilemap position to add the balloon to
-     * @param aiOptions The options for the balloon AI
+     * Adds a mine into the game
+     * @param spriteKey The key of the mine sprite
+     * @param tilePos The tilemap position to add the mine to
+     * @param aiOptions The options for the mine AI
      */
-    protected addBalloon(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
-        let balloon = this.add.animatedSprite(spriteKey, "primary");
-        balloon.position.set(tilePos.x*32, tilePos.y*32);
-        balloon.scale.set(2, 2);
-        balloon.addPhysics();
-        balloon.addAI(BalloonController, aiOptions);
-        balloon.setGroup("balloon");
+    protected addMine(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
+        let mine = this.add.animatedSprite(spriteKey, "primary");
+        mine.position.set(tilePos.x*256, tilePos.y*256);
+        mine.scale.set(2, 2);
+        mine.addPhysics();
+        mine.addAI(MineController, aiOptions);
+        mine.setGroup("mine");
+        mine.setTrigger("player", HW5_Events.PLAYER_HIT_MINE, null);
+    }
+
+    /**
+     * Handles player collisions with mines by firing the proper event
+     * @param player The player which collided with the mine
+     * @param mine The mine that the player collided with
+     */
+    protected handlePlayerMineCollision(player: AnimatedSprite, mine: AnimatedSprite) {
+        if(player == undefined || mine == undefined){ //right after a mine explodes, another collision might be detected
+            console.log("Not a collision");
+        }
+        else if(typeof player !== undefined && mine !== undefined){
+            this.emitter.fireEvent(HW5_Events.MINE_EXPLODED, {owner: mine.id});
+            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "mine_explosion", loop: false});
+            this.incPlayerHealth(-1);
+        }
+    }
+
+    /**
+     * Adds a health kit into the game
+     * @param spriteKey 
+     * @param tilePos 
+     * @param aiOptions 
+     */
+    protected addHealthKit(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void{
 
     }
 
-    // HOMEWORK 5 - TODO
     /**
-     * You must implement this method.
-     * There are 3 types of collisions:
-     * 
-     * 1) Collisions with red balloons
-     * 
-     * 2) Collisions with blue balloons
-     * 
-     * 3) Collisions with green balloons
-     *  
-     * When the player collides with a balloon, you should check the suit color and the balloon color, 
-     * and if they are not the same, damage the player. Otherwise the player is unharmed.
-     * 
-     * In either case you'll also need to pop the balloon and set up elements for the particle system, 
-     * specifically changing the particle system color to the color of the balloon being popped. You'll also
-     * have to use the balloon popping sound you've created and play it here as well.
-     * 
-     * Note that node destruction is handled for you.
-     * 
-     * For those who are curious, there is actually a node.destroy() method.
-     * You no longer have to make the nodes invisible and pretend they don't exist.
-     * You don't have to use this yourself, but you can see examples
-     * of it in this class.
-     * 
+     * Handles player collisions with health kits by firing the proper event
+     * @param player 
+     * @param mine 
      */
-    protected handlePlayerBalloonCollision(player: AnimatedSprite, balloon: AnimatedSprite) {
+    protected handlePlayerHealthKitCollision(player: AnimatedSprite, mine: AnimatedSprite){
+
     }
 
     /**
      * Increments the amount of life the player has
      * @param amt The amount to add to the player life
      */
-    protected incPlayerLife(amt: number): void {
-        GameLevel.livesCount += amt;
-        this.livesCountLabel.text = "Lives: " + GameLevel.livesCount;
-        if (GameLevel.livesCount == 0){
+    protected incPlayerHealth(amt: number): void {
+        GameLevel.health += amt;
+        this.healthLabel.text = "Lives: " + GameLevel.health;
+        if (GameLevel.health == 0){
             Input.disableInput();
             this.player.disablePhysics();
             this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "player_death", loop: false, holdReference: false});
@@ -441,7 +440,7 @@ export default class GameLevel extends Scene {
      * Returns the player to spawn
      */
     protected respawnPlayer(): void {
-        GameLevel.livesCount = 3;
+        GameLevel.health = 3;
         this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
         this.sceneManager.changeToScene(MainMenu, {});
         Input.enableInput();

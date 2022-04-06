@@ -39,12 +39,11 @@ export default class Walk extends OnGround {
 			this.owner.move(this.parent.velocity.scaled(deltaT));
 		}
 		else{
-			console.log("WALKING");
-			this.parent.velocity.x = dir.x * 1000;
+			this.parent.velocity.x = dir.x * 500;
 			//this.parent.velocity.y = this.parent.velocity;
 			this.owner.move(this.parent.velocity.scaled(deltaT));
 			if(Input.isJustPressed("jump")){
-				console.log("TRANBADNWOJKNDW");
+				//console.log("TRANBADNWOJKNDW");
 				//this.parent.velocity.y = -1500;
 				this.finished("jump");
 			}

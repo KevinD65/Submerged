@@ -6,12 +6,12 @@ import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import MathUtils from "../../Wolfie2D/Utils/MathUtils";
 import { HW5_Color } from "../hw5_color";
 import { HW5_Events } from "../hw5_enums";
-import BalloonController, { BalloonStates } from "./BalloonController";
+import MineController, { MineStates } from "./MineController";
 
-export default abstract class BalloonState extends State {
+export default abstract class MineState extends State {
 	owner: GameNode;
 	gravity: number = 500;
-	parent: BalloonController;
+	parent: MineController;
 
 	constructor(parent: StateMachine, owner: GameNode) {
 		super(parent);
@@ -20,33 +20,33 @@ export default abstract class BalloonState extends State {
 	}
 
 	/**
-	 * Here is where the states are defined for handling balloon gravity effects. We recieve a player suit change event 
-	 * and adjust the balloon gravity effects accordingly based on its color
+	 * Here is where the states are defined for handling mine gravity effects. We recieve a player suit change event 
+	 * and adjust the mine gravity effects accordingly based on its color
 	 */
 	handleInput(event: GameEvent): void {
 		if (event.type == HW5_Events.SUIT_COLOR_CHANGE) {
 			let new_color = event.data.get("color");
 			if (this.parent.color == new_color){
-				this.finished(BalloonStates.SINKING);
+				this.finished(MineStates.SINKING);
 			}
 			else {
 				if (this.parent.color == HW5_Color.RED) {
 					if (new_color == HW5_Color.BLUE) {
-						this.finished(BalloonStates.ZEROGRAVITY);
+						this.finished(MineStates.ZEROGRAVITY);
 					} else {
-						this.finished(BalloonStates.RISING);
+						this.finished(MineStates.RISING);
 					}
 				} else if (this.parent.color == HW5_Color.BLUE) {
 					if (new_color == HW5_Color.RED) {
-						this.finished(BalloonStates.ZEROGRAVITY);
+						this.finished(MineStates.ZEROGRAVITY);
 					} else {
-						this.finished(BalloonStates.RISING);
+						this.finished(MineStates.RISING);
 					}
 				} else if (this.parent.color == HW5_Color.GREEN) {
 					if (new_color == HW5_Color.RED) {
-						this.finished(BalloonStates.RISING);
+						this.finished(MineStates.RISING);
 					} else {
-						this.finished(BalloonStates.ZEROGRAVITY);
+						this.finished(MineStates.ZEROGRAVITY);
 					}
 				} 
 			}

@@ -2,7 +2,7 @@ import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import GameEvent from "../../Wolfie2D/Events/GameEvent";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import { HW5_Events } from "../hw5_enums";
-import BalloonState from "./BalloonState";
+import MineState from "./MineState";
 
 // HOMEWORK 5 - TODO
 /**
@@ -20,7 +20,7 @@ import BalloonState from "./BalloonState";
  * You can implement this method how you see fit, there's no one way of doing it. Look at events that
  * are fired to get the player position
  */
-export default class ZeroGravity extends BalloonState {
+export default class ZeroGravity extends MineState {
 	onEnter(): void {
 	}
 

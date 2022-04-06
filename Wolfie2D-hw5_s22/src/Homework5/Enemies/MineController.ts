@@ -7,13 +7,13 @@ import Rising from "./Rising";
 import ZeroGravity from "./ZeroGravity";
 import { HW5_Color } from "../hw5_color";
 
-export enum BalloonStates {
+export enum MineStates {
 	SINKING = "sinking",
 	RISING = "rising",
 	ZEROGRAVITY = "zero_gravity",
 }
 
-export default class BalloonController extends StateMachineAI {
+export default class MineController extends StateMachineAI {
 	owner: GameNode;
 	direction: Vec2 = Vec2.ZERO;
 	velocity: Vec2 = Vec2.ZERO;
@@ -29,16 +29,16 @@ export default class BalloonController extends StateMachineAI {
 		this.receiver.subscribe(HW5_Events.SUIT_COLOR_CHANGE);
 
 		let sinking = new Sinking(this, owner);
-		this.addState(BalloonStates.SINKING, sinking);
+		this.addState(MineStates.SINKING, sinking);
 		let rising = new Rising(this, owner);
-		this.addState(BalloonStates.RISING, rising);
+		this.addState(MineStates.RISING, rising);
 		let zerogravity = new ZeroGravity(this, owner);
-		this.addState(BalloonStates.ZEROGRAVITY, zerogravity);
+		this.addState(MineStates.ZEROGRAVITY, zerogravity);
 
 		this.color = options.color;
 		this.direction = new Vec2(-1, 0);
 
-		this.initialize(BalloonStates.SINKING);
+		this.initialize(MineStates.SINKING);
 	}
 
 	changeState(stateName: string): void {

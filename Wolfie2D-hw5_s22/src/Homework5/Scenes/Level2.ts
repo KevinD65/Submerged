@@ -27,9 +27,9 @@ export default class Level2 extends GameLevel {
     startScene(): void {
         // Add the level 2 tilemap
         this.add.tilemap("level2", new Vec2(2, 2));
-        this.viewport.setBounds(0, 0, 64*32, 20*32);
+        this.viewport.setBounds(0, 0, 64*256, 20*256);
 
-        this.playerSpawn = new Vec2(4*32, 15*32);
+        this.playerSpawn = new Vec2(4*256, 15*256);
         this.totalSwitches = 7;
         this.totalBalloons = 7;
 
@@ -40,15 +40,15 @@ export default class Level2 extends GameLevel {
 
         // Add in our green balloons to the enemies
         for(let pos of [new Vec2(18, 8), new Vec2(25, 3), new Vec2(52, 5)]){
-            this.addBalloon("red", pos, {color: HW5_Color.RED});
+            this.addMine("red", pos, {color: HW5_Color.RED});
         }
 
         for(let pos of [new Vec2(3, 4), new Vec2(33, 10)]){
-            this.addBalloon("green", pos, {color: HW5_Color.GREEN});
+            this.addMine("green", pos, {color: HW5_Color.GREEN});
         }
 
         for(let pos of [new Vec2(20, 3), new Vec2(41,4)]){
-            this.addBalloon("blue", pos, {color: HW5_Color.BLUE});
+            this.addMine("blue", pos, {color: HW5_Color.BLUE});
         }
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
     }

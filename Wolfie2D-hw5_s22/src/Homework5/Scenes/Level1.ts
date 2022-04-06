@@ -24,10 +24,10 @@ export default class Level1 extends GameLevel {
 
     startScene(): void {
         // Add the level 1 tilemap
-        this.add.tilemap("level1", new Vec2(2, 2));
-        this.viewport.setBounds(0, 0, 81*256, 20*256);
+        this.add.tilemap("level1", new Vec2(0.5, 0.5));
+        this.viewport.setBounds(0, 0, 81*256, 10*256);
 
-        this.playerSpawn = new Vec2(3*256, 6*256);
+        this.playerSpawn = new Vec2(3*128, 6*128);
 
         // Set the total switches and balloons in the level
         this.totalSwitches = 4;
@@ -39,22 +39,22 @@ export default class Level1 extends GameLevel {
         // Do generic setup for a GameLevel
         super.startScene();
 
-        this.addLevelEnd(new Vec2(60, 13), new Vec2(5, 5));
+        this.addLevelEnd(new Vec2(75, 5), new Vec2(5, 5));
 
         this.nextLevel = Level2;
 
-        /* COMMENT THIS FOR NOW! WILL REPURPOSE BALLOONS FOR MINES!!!!!!
+        /* COMMENT THIS FOR NOW! WILL REPURPOSE BALLOONS FOR MINES AND HEALTH KITS!!!!!!
         // Add balloons of various types, just red and blue for the first level
         for(let pos of [new Vec2(18, 8), new Vec2(25, 3), new Vec2(52, 5)]){
-            this.addBalloon("red", pos, {color: HW5_Color.RED});
+            this.addMine("red", pos, {color: HW5_Color.RED});
         }
 
         for(let pos of [new Vec2(20, 3), new Vec2(41,4), new Vec2(3, 4)]){
-            this.addBalloon("blue", pos, {color: HW5_Color.BLUE});
+            this.addMine("blue", pos, {color: HW5_Color.BLUE});
         }
         */
 
-        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
+        //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
     }
 
     updateScene(deltaT: number): void {
