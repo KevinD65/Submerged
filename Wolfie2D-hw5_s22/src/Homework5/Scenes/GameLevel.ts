@@ -15,10 +15,12 @@ import Timer from "../../Wolfie2D/Timing/Timer";
 import Color from "../../Wolfie2D/Utils/Color";
 import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
 import MineController from "../Enemies/MineController";
+import SharkController from "../Enemies/SharkController";
 import { HW5_Color } from "../hw5_color";
 import { HW5_Events } from "../hw5_enums";
 import HW5_ParticleSystem from "../HW5_ParticleSystem";
 import PlayerController from "../Player/PlayerController";
+import Level1 from "./Level1";
 import MainMenu from "./MainMenu";
 
 // HOMEWORK 5 - TODO
@@ -32,6 +34,7 @@ export default class GameLevel extends Scene {
     // Every level will have a player, which will be an animated sprite
     protected playerSpawn: Vec2;
     protected player: AnimatedSprite;
+    protected shark: AnimatedSprite;
     protected respawnTimer: Timer;
 
     // Labels for the UI
@@ -75,6 +78,7 @@ export default class GameLevel extends Scene {
         this.initLayers();
         this.initViewport();
         this.initPlayer();
+        this.initShark();
         this.subscribeToEvents();
         this.addUI();
 
@@ -205,6 +209,8 @@ export default class GameLevel extends Scene {
 
             }
         }
+
+        this.handleSharkPlayerCollision(this.player,this.shark);
 
         /**
          * Pressing 1 switches our suit to RED
@@ -361,6 +367,18 @@ export default class GameLevel extends Scene {
     }
 
     /**
+     * Initializes the Shark
+     */
+     protected initShark(): void {
+        // Add the player
+        this.shark = this.add.animatedSprite("shark", "primary");
+        //this.player.scale.set(2, 2);
+        let sharkSpawn = new Vec2(-6*128, 6*128);
+        this.shark.position.copy(sharkSpawn);
+        this.shark.addAI(SharkController, {});
+    }
+
+    /**
      * Initializes the level end area
      */
     protected addLevelEnd(startingTile: Vec2, size: Vec2): void {
@@ -384,6 +402,14 @@ export default class GameLevel extends Scene {
         mine.addAI(MineController, aiOptions);
         mine.setGroup("mine");
         mine.setTrigger("player", HW5_Events.PLAYER_HIT_MINE, null);
+    }
+
+    protected handleSharkPlayerCollision(player: AnimatedSprite, shark: AnimatedSprite)
+    {
+        if(player.position.x<(shark.position.x+shark.size.x/4))
+        {
+            this.emitter.fireEvent(HW5_Events.PLAYER_KILLED, {});
+        }
     }
 
     /**
@@ -442,7 +468,18 @@ export default class GameLevel extends Scene {
     protected respawnPlayer(): void {
         GameLevel.health = 3;
         this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
-        this.sceneManager.changeToScene(MainMenu, {});
+        let sceneOptions = {
+            physics: {
+                groupNames: ["ground", "player", "balloon"],
+                collisions:
+                [
+                    [0, 1, 1],
+                    [1, 0, 0],
+                    [1, 0, 0]
+                ]
+            }
+        }
+        this.sceneManager.changeToScene(Level1, {}, sceneOptions);
         Input.enableInput();
         this.system.stopSystem();
     }
