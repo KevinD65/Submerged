@@ -248,7 +248,10 @@ export default class GameLevel extends Scene {
      * Initializes the viewport
      */
     protected initViewport(): void {
+        console.log(this.viewport.getCenter());
+        console.log(this.viewport.getZoomLevel());
         this.viewport.setZoomLevel(1);
+        
     }
 
     /**
@@ -466,21 +469,9 @@ export default class GameLevel extends Scene {
      * Returns the player to spawn
      */
     protected respawnPlayer(): void {
-        GameLevel.health = 3;
         this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
-        let sceneOptions = {
-            physics: {
-                groupNames: ["ground", "player", "balloon"],
-                collisions:
-                [
-                    [0, 1, 1],
-                    [1, 0, 0],
-                    [1, 0, 0]
-                ]
-            }
-        }
-        this.sceneManager.changeToScene(Level1, {}, sceneOptions);
         Input.enableInput();
         this.system.stopSystem();
+        this.sceneManager.changeToScene(MainMenu, {isGameOver: true});
     }
 }
