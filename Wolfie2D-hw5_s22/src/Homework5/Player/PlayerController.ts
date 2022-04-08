@@ -35,7 +35,7 @@ export default class PlayerController extends StateMachineAI {
 	MIN_SPEED: number = 200;
     MAX_SPEED: number = 300;
     tilemap: OrthogonalTilemap;
-    suitColor: HW5_Color;
+    damageCooldown: number = -1;
 
     // HOMEWORK 5 - TODO
     /**
@@ -45,7 +45,7 @@ export default class PlayerController extends StateMachineAI {
      * 
      * Tweens MUST be used to create this new animation, although you can add to the spritesheet if you want to add some more detail.
      * 
-     * Look at incPlayerLife() in GameLevel to see where this animation would be called.
+     * Look at incPlayerHealth() in GameLevel to see where this animation would be called.
      */
     initializeAI(owner: GameNode, options: Record<string, any>){
         this.owner = owner;
@@ -54,7 +54,7 @@ export default class PlayerController extends StateMachineAI {
 
         this.tilemap = this.owner.getScene().getTilemap(options.tilemap) as OrthogonalTilemap;
 
-        this.suitColor = options.color;
+        //this.suitColor = options.color;
 
         this.receiver.subscribe(HW5_Events.SUIT_COLOR_CHANGE);
 
@@ -112,8 +112,43 @@ export default class PlayerController extends StateMachineAI {
      * 
      */
     update(deltaT: number): void {
-        console.log("HERe");
 		super.update(deltaT);
+        let checkForSpikes = this.owner.position; //get player world position
+        //console.log(checkForSpikes);
+        let checkSpikesAbove = this.tilemap.getColRowAt(new Vec2(checkForSpikes.x/2, checkForSpikes.y - 25));
+        let checkSpikesBelow = this.tilemap.getColRowAt(new Vec2(checkForSpikes.x, checkForSpikes.y + 1));
+        let checkSpikesInFront = this.tilemap.getColRowAt(new Vec2(checkForSpikes.x + 1, checkForSpikes.y));
+        let checkSpikesBehind = this.tilemap.getColRowAt(new Vec2(checkForSpikes.x - 1, checkForSpikes.y));
+        
+        let tileAbove = this.tilemap.getTileAtRowCol(new Vec2(checkSpikesAbove.x, checkSpikesAbove.y));
+        let tileBelow = this.tilemap.getTileAtRowCol(checkSpikesBelow);
+        let tileAhead = this.tilemap.getTileAtRowCol(checkSpikesInFront);
+        let tileBehind = this.tilemap.getTileAtRowCol(checkSpikesBehind);
+
+        //CHECK IF THE PLAYER IS IN CONTACT WITH A SPIKED TILE
+        console.log(tileAbove);
+        if(tileAbove == 1 || tileAbove == 2 || tileAbove == 3 || tileAbove == 7 || tileAbove == 8 || tileAbove == 18 || tileAbove == 21 || tileAbove == 22){
+            if(this.damageCooldown == -1 || this.damageCooldown == 0){
+                this.damageCooldown = 20;
+                this.emitter.fireEvent(HW5_Events.PLAYER_HIT_SPIKES);
+            }
+            else{
+                this.damageCooldown -= 1;
+            }
+
+        } 
+        else if(tileBelow == 4 || tileBelow == 6 || tileBelow == 9 || tileBelow == 10 || tileBelow == 11 || tileBelow == 12 
+                || tileBelow == 32 || tileBelow == 33){
+            this.emitter.fireEvent(HW5_Events.PLAYER_HIT_SPIKES); 
+        }
+        else if(tileAhead == 1 || tileAhead == 2 || tileAhead == 3 || tileAhead == 4 || tileAhead == 6 || tileAhead == 7 
+                || tileAhead == 1 || tileAhead == 12 || tileAhead == 13 || tileAhead == 20 || tileAhead == 21 || tileAhead == 33){
+            this.emitter.fireEvent(HW5_Events.PLAYER_HIT_SPIKES);
+        }
+        else if(tileBehind == 1 || tileBehind == 2 || tileBehind == 3 || tileBehind == 4 || tileBehind == 6 || tileBehind == 8 || 
+            tileBehind == 9 || tileBehind == 11 || tileBehind == 13 || tileBehind == 18 || tileBehind == 22 || tileBehind == 32){
+            this.emitter.fireEvent(HW5_Events.PLAYER_HIT_SPIKES);
+        }
 
 		if(this.currentState instanceof Jump){
 			Debug.log("playerstate", "Player State: Jump");

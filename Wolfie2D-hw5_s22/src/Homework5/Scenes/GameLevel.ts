@@ -112,12 +112,13 @@ export default class GameLevel extends Scene {
             let event = this.receiver.getNextEvent();
             
             switch(event.type){
-                case HW5_Events.PLAYER_HIT_SWITCH:
+                case HW5_Events.PLAYER_HIT_SPIKES:
                     {
-                        // Hit a switch block, so update the label and count
-                        this.switchesPressed++;
-                        this.switchLabel.text = "Switches Left: " + (this.totalSwitches - this.switchesPressed)
-                        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "switch", loop: false, holdReference: false});
+                        // If the player hit spikes, decrement the health and display the updated health
+                        this.player.animation.play("damage");
+                        this.incPlayerHealth(-1);
+                        this.healthLabel.text = "Health: " + GameLevel.health;
+                        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "switch", loop: false, holdReference: false}); //CHANGE THIS TO A SPIKE SOUND
                     }
                     break;
 
@@ -200,6 +201,8 @@ export default class GameLevel extends Scene {
                     break;
                 case HW5_Events.PLAYER_KILLED:
                     {
+                        this.player.animation.play("dying");
+                        this.player.animation.play("dead");
                         this.respawnPlayer();
                     }
 
@@ -251,6 +254,7 @@ export default class GameLevel extends Scene {
     protected subscribeToEvents(){
         this.receiver.subscribe([
             HW5_Events.PLAYER_HIT_SWITCH,
+            HW5_Events.PLAYER_HIT_SPIKES,
             HW5_Events.PLAYER_HIT_MINE,
             HW5_Events.MINE_EXPLODED,
             HW5_Events.PLAYER_ENTERED_LEVEL_END,
@@ -353,7 +357,7 @@ export default class GameLevel extends Scene {
         this.player.addPhysics(new AABB(Vec2.ZERO, new Vec2(14, 14)));
         this.player.inWater = true;
         this.player.colliderOffset.set(0, 2);
-        this.player.addAI(PlayerController, {playerType: "platformer", tilemap: "Main", color: HW5_Color.RED});
+        this.player.addAI(PlayerController, {playerType: "platformer", tilemap: "Background", color: HW5_Color.RED});
 
         this.player.setGroup("player");
 
@@ -427,12 +431,12 @@ export default class GameLevel extends Scene {
      */
     protected incPlayerHealth(amt: number): void {
         GameLevel.health += amt;
-        this.healthLabel.text = "Lives: " + GameLevel.health;
-        if (GameLevel.health == 0){
+        this.healthLabel.text = "Health: " + GameLevel.health;
+        if (GameLevel.health <= 0){
             Input.disableInput();
             this.player.disablePhysics();
             this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "player_death", loop: false, holdReference: false});
-            this.player.tweens.play("death");
+            this.emitter.fireEvent(HW5_Events.PLAYER_KILLED);
         }
     }
 

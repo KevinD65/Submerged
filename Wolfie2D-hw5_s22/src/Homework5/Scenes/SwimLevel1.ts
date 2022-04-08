@@ -27,7 +27,7 @@ export default class Level1 extends GameLevel {
         this.add.tilemap("level1", new Vec2(0.5, 0.5));
         this.viewport.setBounds(0, 0, 81*256, 10*256);
 
-        this.playerSpawn = new Vec2(3*128, 6*128);
+        this.playerSpawn = new Vec2(2*128, 4*128);
 
         // Set the total switches and balloons in the level
         this.totalSwitches = 4;
@@ -42,6 +42,8 @@ export default class Level1 extends GameLevel {
         this.addLevelEnd(new Vec2(75, 5), new Vec2(5, 5));
 
         this.nextLevel = Level2;
+
+        //hdjanwjkdnwkajdnmklamdklawmdl
 
         /* COMMENT THIS FOR NOW! WILL REPURPOSE BALLOONS FOR MINES AND HEALTH KITS!!!!!!
         // Add balloons of various types, just red and blue for the first level

@@ -72,6 +72,8 @@ export default class OrthogonalTilemap extends Tilemap {
             return -1;
         }
 
+        //console.log(this.data);
+
         return this.data[rowCol.y * this.numCols + rowCol.x];
     }
 

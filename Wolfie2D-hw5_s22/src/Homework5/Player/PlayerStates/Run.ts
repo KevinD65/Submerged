@@ -13,15 +13,6 @@ export default class Run extends OnGround {
 	}
 
 	updateSuit() {
-		if (this.parent.suitColor == HW5_Color.RED){ 
-			this.owner.animation.playIfNotAlready("RED_WALK", true);
-		}
-		else if (this.parent.suitColor == HW5_Color.GREEN){
-			this.owner.animation.playIfNotAlready("GREEN_WALK", true);
-		}
-		else if (this.parent.suitColor == HW5_Color.BLUE){
-			this.owner.animation.playIfNotAlready("BLUE_WALK", true);
-		}
 	}
 
 	update(deltaT: number): void {

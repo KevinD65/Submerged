@@ -5,7 +5,7 @@ import Button from "../../Wolfie2D/Nodes/UIElements/Button";
 import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
 import Scene from "../../Wolfie2D/Scene/Scene";
 import Color from "../../Wolfie2D/Utils/Color";
-import Level1 from "./Level1";
+import Level1 from "./SwimLevel1";
 import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
 import Layer from "../../Wolfie2D/Scene/Layer";
 import Label from "../../Wolfie2D/Nodes/UIElements/Label";
@@ -270,7 +270,7 @@ export default class MainMenu extends Scene {
         //THIS IS NEEDED FOR COLLISION DETECTION
         let sceneOptions = {
             physics: {
-                groupNames: ["ground", "player", "balloon"],
+                groupNames: ["ground", "player", "mine"],
                 collisions:
                 [
                     [0, 1, 1],

@@ -25,9 +25,6 @@ export default abstract class PlayerState extends State {
 
 	// Change the suit color on receiving a suit color change event
 	handleInput(event: GameEvent): void {
-		if (event.type == HW5_Events.SUIT_COLOR_CHANGE) {
-			this.parent.suitColor = event.data.get("color");
-		}
 	}
 
 	/** 
