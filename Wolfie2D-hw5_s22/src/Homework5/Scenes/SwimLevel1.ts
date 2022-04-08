@@ -10,6 +10,7 @@ export default class Level1 extends GameLevel {
         // Load resources
         this.load.tilemap("level1", "hw5_assets/tilemaps/SubmergedMap1.tmj");
         this.load.spritesheet("player", "hw5_assets/spritesheets/diver.json");
+        this.load.spritesheet("shark", "hw5_assets/spritesheets/shark.json");
         this.load.spritesheet("red", "hw5_assets/spritesheets/redBalloon.json");
         this.load.spritesheet("blue", "hw5_assets/spritesheets/blueBalloon.json");
         this.load.audio("jump", "hw5_assets/sounds/jump.wav");

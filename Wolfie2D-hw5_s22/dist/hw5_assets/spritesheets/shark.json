@@ -1,8 +1,8 @@
 {
 	"name": "shark",
 	"spriteSheetImage": "shark.png",
-	"spriteWidth": 128,
-	"spriteHeight": 128,
+	"spriteWidth": 1536,
+	"spriteHeight": 1536,
 	"leftBuffer": 0,
 	"rightBuffer": 0,
 	"topBuffer": 0,

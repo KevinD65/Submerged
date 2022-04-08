@@ -25,7 +25,19 @@ export default class MainMenu extends Scene {
     private levels: Layer;
     private logoLayer: Layer;
     private splashPress: boolean;
+    private isGameOver: boolean;
+    private gameOver: Layer;
     
+
+    initScene(init: Record<string, any>): void {
+        if(init != null)
+        {
+            this.isGameOver = init.isGameOver;
+        }
+        else{
+            this.isGameOver = false;
+        }
+    }
 
     loadScene(): void {
         // Load the menu song
@@ -35,6 +47,9 @@ export default class MainMenu extends Scene {
     }
 
     startScene(): void {
+        this.viewport.setCenter(1024,512);
+        this.viewport.follow(null);
+        console.log(this.viewport.getCenter());
         //SPLASH SCREEN
         this.splashPress = false;
         Input.enableInput();
@@ -57,6 +72,13 @@ export default class MainMenu extends Scene {
 		this.lg1.position = new Vec2(this.viewport.getCenter().x,this.viewport.getCenter().y+75);
 
         this.splash = this.addUILayer("Splash");
+        if(this.isGameOver)
+        {
+            this.splash.setHidden(true);
+        }
+        else{
+            this.splash.setHidden(false);
+        }
 
         // Center the viewport
         let size = this.viewport.getHalfSize();
@@ -267,6 +289,32 @@ export default class MainMenu extends Scene {
         back3.font = "PixelSimple";
         back3.textColor = Color.fromStringHex("BB0070");
 
+        //GAME OVER SCREEN
+        this.gameOver = this.addUILayer("GameOver");
+        if(this.isGameOver)
+        {
+            this.gameOver.setHidden(false);
+        }
+        else
+        {
+            this.gameOver.setHidden(true);
+        }
+        //Title Label
+        const title6 = <Label>this.add.uiElement(UIElementType.LABEL, "GameOver", {position: new Vec2(size.x, size.y - 100), text: "Game Over"});
+        title6.textColor = Color.fromStringHex("BB0070");
+        title6.fontSize = 100;
+
+        //Back Button
+        const back4 = <Button>this.add.uiElement(UIElementType.BUTTON, "GameOver", {position: new Vec2(size.x, size.y + 225), text: "Back To Menu"});
+        back4.backgroundColor = Color.fromStringHex("00BDF9");
+        back4.borderColor = Color.fromStringHex("00BDF9");
+        back4.borderRadius = 20;
+        back4.setPadding(new Vec2(50, 10));
+        back4.font = "PixelSimple";
+        back4.textColor = Color.fromStringHex("BB0070");
+
+
+
         //THIS IS NEEDED FOR COLLISION DETECTION
         let sceneOptions = {
             physics: {
@@ -283,6 +331,12 @@ export default class MainMenu extends Scene {
         //Button Clicks
         level1.onClick = () => {
             this.sceneManager.changeToScene(Level1, {}, sceneOptions);
+        }
+
+        back4.onClick = () => {
+            this.main.setHidden(false);
+            this.gameOver.setHidden(true);
+            this.isGameOver = false;
         }
 
         back3.onClick = () => {
@@ -322,7 +376,7 @@ export default class MainMenu extends Scene {
     updateScene(deltaT: number): void {
         if(Input.isMousePressed(0))
         {
-            if(!this.splashPress)
+            if(!this.splashPress && !this.isGameOver)
             {
                 this.splashPress = true;
                 this.main.setHidden(false);
@@ -335,6 +389,7 @@ export default class MainMenu extends Scene {
     unloadScene(): void {
         // The scene is being destroyed, so we can stop playing the song
         this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "menu"});
+        this.resourceManager.unloadAllResources();
     }
 }
 
