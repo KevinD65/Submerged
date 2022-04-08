@@ -11,23 +11,18 @@ export default class Level2 extends GameLevel {
      * 
      * Not all of these loads are needed. Decide which to remove and handle keeping resources in Level1
      */
-    loadScene(): void {
+     loadScene(): void {
         // Load resources
-        this.load.tilemap("level2", "hw5_assets/tilemaps/level1.json");
+        this.load.tilemap("level2", "hw5_assets/tilemaps/CaveBossLevel1.tmj");
         this.load.spritesheet("player", "hw5_assets/spritesheets/diver.json");
-        this.load.spritesheet("green", "hw5_assets/spritesheets/greenBalloon.json");
-        this.load.spritesheet("red", "hw5_assets/spritesheets/redBalloon.json");
-        this.load.spritesheet("blue", "hw5_assets/spritesheets/blueBalloon.json");
-        this.load.audio("jump", "hw5_assets/sounds/jump.wav");
-        this.load.audio("switch", "hw5_assets/sounds/switch.wav");
-        this.load.audio("player_death", "hw5_assets/sounds/player_death.wav");
-        this.load.audio("level_music", "hw5_assets/music/menu.mp3");
-
-        //this.load.tilemap("level1", "hw5_assets/tilemaps/SubmergedMap1.tmj");
         this.load.spritesheet("shark", "hw5_assets/spritesheets/shark.json");
         //this.load.spritesheet("red", "hw5_assets/spritesheets/redBalloon.json");
         //this.load.spritesheet("blue", "hw5_assets/spritesheets/blueBalloon.json");
         this.load.spritesheet("mine", "hw5_assets/spritesheets/mine.json")
+        this.load.audio("jump", "hw5_assets/sounds/jump.wav");
+        this.load.audio("switch", "hw5_assets/sounds/switch.wav");
+        this.load.audio("player_death", "hw5_assets/sounds/player_death.wav");
+        this.load.audio("level_music", "hw5_assets/music/menu.mp3");
     }
 
     unloadScene(){
@@ -38,37 +33,11 @@ export default class Level2 extends GameLevel {
     }
 
     startScene(): void {
-        // Add the level 2 tilemap
-        this.add.tilemap("level2", new Vec2(2, 2));
-        this.viewport.setBounds(0, 0, 64*256, 20*256);
+        // Add the level 1 tilemap
+        this.add.tilemap("level2", new Vec2(0.5, 0.5));
+        this.viewport.setBounds(0, 0, 81*256, 10*256);
 
-        this.playerSpawn = new Vec2(4*100, 15*20);
-        this.totalSwitches = 7;
-
-        // Do generic setup for a GameLevel
-        super.startScene();
-
-        this.addLevelEnd(new Vec2(60, 12), new Vec2(2, 2));
-
-        // Add in our green balloons to the enemies
-        for(let pos of [new Vec2(18, 8), new Vec2(25, 3), new Vec2(52, 5)]){
-            this.addMine("red", pos, {color: HW5_Color.RED});
-        }
-
-        for(let pos of [new Vec2(3, 4), new Vec2(33, 10)]){
-            this.addMine("green", pos, {color: HW5_Color.GREEN});
-        }
-
-        for(let pos of [new Vec2(20, 3), new Vec2(41,4)]){
-            this.addMine("blue", pos, {color: HW5_Color.BLUE});
-        }
-        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
-
-
-        //this.add.tilemap("level1", new Vec2(0.5, 0.5));
-        //this.viewport.setBounds(0, 0, 81*256, 10*256);
-
-        //this.playerSpawn = new Vec2(2*128, 4*128);
+        this.playerSpawn = new Vec2(2*128, 4*128);
 
         // Set the total switches and balloons in the level
         this.totalMines = 1;
@@ -78,19 +47,19 @@ export default class Level2 extends GameLevel {
         this.waterLevel = false;
 
         // Do generic setup for a GameLevel
-        //super.startScene();
+        super.startScene();
 
-        //this.addLevelEnd(new Vec2(75, 5), new Vec2(5, 5));
+        this.addLevelEnd(new Vec2(75, 5), new Vec2(5, 5));
 
         //this.nextLevel = Level2;
-
-        //hdjanwjkdnwkajdnmklamdklawmdl
 
         //COMMENT THIS FOR NOW! WILL REPURPOSE BALLOONS FOR MINES AND HEALTH KITS!!!!!!
         // Add balloons of various types, just red and blue for the first level
         for(let pos of [new Vec2(10, 5)]){
             this.addMine("mine", pos, {});
         }
+
+        //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
     }
 
     updateScene(deltaT: number): void {
