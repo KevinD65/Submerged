@@ -14,7 +14,7 @@ export default class Level2 extends GameLevel {
     loadScene(): void {
         // Load resources
         this.load.tilemap("level2", "hw5_assets/tilemaps/level1.json");
-        this.load.spritesheet("player", "hw5_assets/spritesheets/spike.json");
+        this.load.spritesheet("player", "hw5_assets/spritesheets/diver.json");
         this.load.spritesheet("green", "hw5_assets/spritesheets/greenBalloon.json");
         this.load.spritesheet("red", "hw5_assets/spritesheets/redBalloon.json");
         this.load.spritesheet("blue", "hw5_assets/spritesheets/blueBalloon.json");
@@ -22,6 +22,19 @@ export default class Level2 extends GameLevel {
         this.load.audio("switch", "hw5_assets/sounds/switch.wav");
         this.load.audio("player_death", "hw5_assets/sounds/player_death.wav");
         this.load.audio("level_music", "hw5_assets/music/menu.mp3");
+
+        //this.load.tilemap("level1", "hw5_assets/tilemaps/SubmergedMap1.tmj");
+        this.load.spritesheet("shark", "hw5_assets/spritesheets/shark.json");
+        //this.load.spritesheet("red", "hw5_assets/spritesheets/redBalloon.json");
+        //this.load.spritesheet("blue", "hw5_assets/spritesheets/blueBalloon.json");
+        this.load.spritesheet("mine", "hw5_assets/spritesheets/mine.json")
+    }
+
+    unloadScene(){
+        this.resourceManager.keepSpritesheet("player");
+        this.resourceManager.keepSpritesheet("shark");
+        this.resourceManager.keepSpritesheet("mine");
+        this.resourceManager.keepAudio("player_death");
     }
 
     startScene(): void {
@@ -29,7 +42,7 @@ export default class Level2 extends GameLevel {
         this.add.tilemap("level2", new Vec2(2, 2));
         this.viewport.setBounds(0, 0, 64*256, 20*256);
 
-        this.playerSpawn = new Vec2(4*256, 15*256);
+        this.playerSpawn = new Vec2(4*100, 15*20);
         this.totalSwitches = 7;
 
         // Do generic setup for a GameLevel
@@ -50,6 +63,34 @@ export default class Level2 extends GameLevel {
             this.addMine("blue", pos, {color: HW5_Color.BLUE});
         }
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
+
+
+        //this.add.tilemap("level1", new Vec2(0.5, 0.5));
+        //this.viewport.setBounds(0, 0, 81*256, 10*256);
+
+        //this.playerSpawn = new Vec2(2*128, 4*128);
+
+        // Set the total switches and balloons in the level
+        this.totalMines = 1;
+        this.totalSwitches = 4;
+
+        // Set this to a water level
+        this.waterLevel = false;
+
+        // Do generic setup for a GameLevel
+        //super.startScene();
+
+        //this.addLevelEnd(new Vec2(75, 5), new Vec2(5, 5));
+
+        //this.nextLevel = Level2;
+
+        //hdjanwjkdnwkajdnmklamdklawmdl
+
+        //COMMENT THIS FOR NOW! WILL REPURPOSE BALLOONS FOR MINES AND HEALTH KITS!!!!!!
+        // Add balloons of various types, just red and blue for the first level
+        for(let pos of [new Vec2(10, 5)]){
+            this.addMine("mine", pos, {});
+        }
     }
 
     updateScene(deltaT: number): void {
