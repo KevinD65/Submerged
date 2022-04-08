@@ -56,7 +56,7 @@ export default class PlayerController extends StateMachineAI {
 
         //this.suitColor = options.color;
 
-        this.receiver.subscribe(HW5_Events.SUIT_COLOR_CHANGE);
+        //this.receiver.subscribe(HW5_Events.SUIT_COLOR_CHANGE);
 
         owner.tweens.add("flip", {
             startDelay: 0,
@@ -115,21 +115,22 @@ export default class PlayerController extends StateMachineAI {
 		super.update(deltaT);
         let checkForSpikes = this.owner.position; //get player world position
         //console.log(checkForSpikes);
-        let checkSpikesAbove = this.tilemap.getColRowAt(new Vec2(checkForSpikes.x/2, checkForSpikes.y - 25));
-        let checkSpikesBelow = this.tilemap.getColRowAt(new Vec2(checkForSpikes.x, checkForSpikes.y + 1));
+        let checkSpikesAbove = this.tilemap.getColRowAt(new Vec2(checkForSpikes.x, checkForSpikes.y - 25));
+        let checkSpikesBelow = this.tilemap.getColRowAt(new Vec2(checkForSpikes.x, checkForSpikes.y + 25));
         let checkSpikesInFront = this.tilemap.getColRowAt(new Vec2(checkForSpikes.x + 1, checkForSpikes.y));
         let checkSpikesBehind = this.tilemap.getColRowAt(new Vec2(checkForSpikes.x - 1, checkForSpikes.y));
         
         let tileAbove = this.tilemap.getTileAtRowCol(new Vec2(checkSpikesAbove.x, checkSpikesAbove.y));
-        let tileBelow = this.tilemap.getTileAtRowCol(checkSpikesBelow);
-        let tileAhead = this.tilemap.getTileAtRowCol(checkSpikesInFront);
-        let tileBehind = this.tilemap.getTileAtRowCol(checkSpikesBehind);
+        let tileBelow = this.tilemap.getTileAtRowCol(new Vec2(checkSpikesBelow.x, checkSpikesBelow.y));
+        let tileAhead = this.tilemap.getTileAtRowCol(new Vec2(checkSpikesInFront.x, checkSpikesInFront.y));
+        let tileBehind = this.tilemap.getTileAtRowCol(new Vec2(checkSpikesBehind.x, checkSpikesBehind.y));
 
         //CHECK IF THE PLAYER IS IN CONTACT WITH A SPIKED TILE
         console.log(tileAbove);
-        if(tileAbove == 1 || tileAbove == 2 || tileAbove == 3 || tileAbove == 7 || tileAbove == 8 || tileAbove == 18 || tileAbove == 21 || tileAbove == 22){
+        console.log(tileBelow);
+        if(tileAbove == 1 || tileAbove == 2 || tileAbove == 3 || tileAbove == 6 || tileAbove == 7 || tileAbove == 15 || tileAbove == 17 || tileAbove == 18){
             if(this.damageCooldown == -1 || this.damageCooldown == 0){
-                this.damageCooldown = 20;
+                this.damageCooldown = 30;
                 this.emitter.fireEvent(HW5_Events.PLAYER_HIT_SPIKES);
             }
             else{
@@ -137,17 +138,34 @@ export default class PlayerController extends StateMachineAI {
             }
 
         } 
-        else if(tileBelow == 4 || tileBelow == 6 || tileBelow == 9 || tileBelow == 10 || tileBelow == 11 || tileBelow == 12 
-                || tileBelow == 32 || tileBelow == 33){
-            this.emitter.fireEvent(HW5_Events.PLAYER_HIT_SPIKES); 
+        else if(tileBelow == 4 || tileBelow == 5 || tileBelow == 8 || tileBelow == 9 || tileBelow == 10 || tileBelow == 11 || tileBelow == 26 || tileBelow == 27){
+            if(this.damageCooldown == -1 || this.damageCooldown == 0){
+                this.damageCooldown = 30;
+                this.emitter.fireEvent(HW5_Events.PLAYER_HIT_SPIKES);
+            }
+            else{
+                this.damageCooldown -= 1;
+            }
         }
-        else if(tileAhead == 1 || tileAhead == 2 || tileAhead == 3 || tileAhead == 4 || tileAhead == 6 || tileAhead == 7 
-                || tileAhead == 1 || tileAhead == 12 || tileAhead == 13 || tileAhead == 20 || tileAhead == 21 || tileAhead == 33){
-            this.emitter.fireEvent(HW5_Events.PLAYER_HIT_SPIKES);
+        else if(tileAhead == 1 || tileAhead == 2 || tileAhead == 3 || tileAhead == 4 || tileAhead == 6 || tileAhead == 7 || tileAhead == 8 || tileAhead == 9 || tileAhead == 10 
+            || tileAhead == 11 || tileAhead == 15 || tileAhead == 17 || tileAhead == 18 || tileAhead == 26 || tileAhead == 27){
+            if(this.damageCooldown == -1 || this.damageCooldown == 0){
+                this.damageCooldown = 30;
+                this.emitter.fireEvent(HW5_Events.PLAYER_HIT_SPIKES);
+            }
+            else{
+                this.damageCooldown -= 1;
+            }
         }
-        else if(tileBehind == 1 || tileBehind == 2 || tileBehind == 3 || tileBehind == 4 || tileBehind == 6 || tileBehind == 8 || 
-            tileBehind == 9 || tileBehind == 11 || tileBehind == 13 || tileBehind == 18 || tileBehind == 22 || tileBehind == 32){
-            this.emitter.fireEvent(HW5_Events.PLAYER_HIT_SPIKES);
+        else if(tileBehind == 1 || tileBehind == 2 || tileBehind == 3 || tileBehind == 4 || tileBehind == 5 || tileBehind == 6 || tileBehind == 7 || tileBehind == 8 
+            || tileBehind == 9 || tileBehind == 10 || tileBehind == 11 || tileBehind == 15 || tileBehind == 17 || tileBehind == 18 || tileBehind == 26 || tileBehind == 27){
+            if(this.damageCooldown == -1 || this.damageCooldown == 0){
+                this.damageCooldown = 30;
+                this.emitter.fireEvent(HW5_Events.PLAYER_HIT_SPIKES);
+            }
+            else{
+                this.damageCooldown -= 1;
+            }
         }
 
 		if(this.currentState instanceof Jump){

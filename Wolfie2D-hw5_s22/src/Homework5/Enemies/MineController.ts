@@ -38,7 +38,7 @@ export default class MineController extends StateMachineAI {
 		this.color = options.color;
 		this.direction = new Vec2(-1, 0);
 
-		this.initialize(MineStates.SINKING);
+		this.initialize(MineStates.ZEROGRAVITY);
 	}
 
 	changeState(stateName: string): void {

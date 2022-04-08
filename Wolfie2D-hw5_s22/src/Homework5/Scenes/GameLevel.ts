@@ -20,7 +20,6 @@ import { HW5_Color } from "../hw5_color";
 import { HW5_Events } from "../hw5_enums";
 import HW5_ParticleSystem from "../HW5_ParticleSystem";
 import PlayerController from "../Player/PlayerController";
-import Level1 from "./Level1";
 import MainMenu from "./MainMenu";
 
 // HOMEWORK 5 - TODO
@@ -36,6 +35,7 @@ export default class GameLevel extends Scene {
     protected player: AnimatedSprite;
     protected shark: AnimatedSprite;
     protected respawnTimer: Timer;
+    protected static playerBeenKilled: boolean = false;
 
     // Labels for the UI
     protected static health: number = 3;
@@ -55,12 +55,10 @@ export default class GameLevel extends Scene {
     protected system: HW5_ParticleSystem;
 
     // Cooldown timer for changing suits
-    protected suitChangeTimer: Timer;
+    protected deathTimer: Timer;
+    protected static deathTimerFlag: boolean = false;
 
-    // Total ballons and amount currently popped
-    protected totalBalloons: number;
-    protected balloonLabel: Label;
-    protected balloonsPopped: number;
+    protected totalMines: number;
 
     // Total switches and amount currently pressed
     protected totalSwitches: number;
@@ -71,8 +69,9 @@ export default class GameLevel extends Scene {
     protected waterLevel: boolean;
 
     startScene(): void {
-        this.balloonsPopped = 0;
+        this.totalMines = 0;
         this.switchesPressed = 0;
+        GameLevel.health = 3;
 
         // Do the game level standard initializations
         this.initLayers();
@@ -98,8 +97,8 @@ export default class GameLevel extends Scene {
             this.levelTransitionScreen.tweens.play("fadeIn");
         });
 
-        // 3 second cooldown for changing suits
-        this.suitChangeTimer = new Timer(3000);
+        // 5 second timer after a death
+        this.deathTimer = new Timer(2000);
 
         // Start the black screen fade out
         this.levelTransitionScreen.tweens.play("fadeOut");
@@ -119,15 +118,18 @@ export default class GameLevel extends Scene {
                 case HW5_Events.PLAYER_HIT_SPIKES:
                     {
                         // If the player hit spikes, decrement the health and display the updated health
-                        this.player.animation.play("damage");
-                        this.incPlayerHealth(-1);
-                        this.healthLabel.text = "Health: " + GameLevel.health;
-                        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "switch", loop: false, holdReference: false}); //CHANGE THIS TO A SPIKE SOUND
+                        if(!GameLevel.playerBeenKilled){
+                            this.player.animation.play("damage");
+                            this.incPlayerHealth(-1);
+                            this.healthLabel.text = "Health: " + GameLevel.health;
+                            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "switch", loop: false, holdReference: false}); //CHANGE THIS TO A SPIKE SOUND
+                        }
                     }
                     break;
 
                 case HW5_Events.PLAYER_HIT_MINE:
                     {
+                        this.player.animation.play("damage");
                         let node = this.sceneGraph.getNode(event.data.get("node"));
                         let other = this.sceneGraph.getNode(event.data.get("other"));
 
@@ -144,9 +146,7 @@ export default class GameLevel extends Scene {
 
                 case HW5_Events.MINE_EXPLODED:
                     {
-                        // An balloon collided with the player, destroy it and use the particle system
-                        this.balloonsPopped++;
-                        this.balloonLabel.text = "Balloons Left: " + (this.totalBalloons - this.balloonsPopped);
+                        this.totalMines = this.totalMines - 1;
                         let node = this.sceneGraph.getNode(event.data.get("owner"));
                         
                         // Set mass based on color
@@ -205,34 +205,31 @@ export default class GameLevel extends Scene {
                     break;
                 case HW5_Events.PLAYER_KILLED:
                     {
-                        this.player.animation.play("dying");
-                        this.player.animation.play("dead");
-                        this.respawnPlayer();
+                        if(!GameLevel.deathTimerFlag && this.levelEndTimer.isStopped()){ //we check if the levelEndTimer has run in case a player dies after reaching the level end
+                            console.log("HOW MANY?");
+                            this.player.animation.play("dying");
+                            this.player.animation.play("dead");
+                            GameLevel.deathTimerFlag = true;
+                            this.deathTimer.start();
+                        }
+                        else if(!GameLevel.deathTimerFlag && (this.levelEndTimer.isStopped() && !this.levelEndTimer.hasRun())){
+                            console.log("HOW MANY?");
+                            this.player.animation.play("dying");
+                            this.player.animation.play("dead");
+                            GameLevel.deathTimerFlag = true;
+                            this.deathTimer.start();
+                        }
                     }
-
             }
         }
 
         this.handleSharkPlayerCollision(this.player,this.shark);
 
-        /**
-         * Pressing 1 switches our suit to RED
-         * Pressing 2 switches our suit to BLUE
-         * Pressing 3 switches our suit to GREEN
-         */
-        if (this.suitChangeTimer.isStopped()) {
-            if (Input.isKeyJustPressed("1")) {
-                this.emitter.fireEvent(HW5_Events.SUIT_COLOR_CHANGE, {color: HW5_Color.RED});
-                this.suitChangeTimer.start();
-            }
-            if (Input.isKeyJustPressed("2")) {
-                this.emitter.fireEvent(HW5_Events.SUIT_COLOR_CHANGE, {color: HW5_Color.BLUE});
-                this.suitChangeTimer.start();
-            }
-            if (Input.isKeyJustPressed("3")) {
-                this.emitter.fireEvent(HW5_Events.SUIT_COLOR_CHANGE, {color: HW5_Color.GREEN});
-                this.suitChangeTimer.start();
-            }
+        if(this.deathTimer.isStopped() && GameLevel.deathTimerFlag == true){
+            GameLevel.deathTimerFlag = false;
+            this.deathTimer.reset();
+            GameLevel.playerBeenKilled = false;
+            this.respawnPlayer();
         }
     }
 
@@ -278,14 +275,6 @@ export default class GameLevel extends Scene {
      */
     protected addUI(){
         // In-game labels
-        /*
-        this.balloonLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(80, 30), text: "Balloons Left: " + (this.totalBalloons - this.balloonsPopped)});
-        this.balloonLabel.textColor = Color.BLACK
-        this.balloonLabel.font = "PixelSimple";
-
-        this.switchLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(80, 50), text: "Switches Left: " + (this.totalSwitches - this.switchesPressed)});
-        this.switchLabel.textColor = Color.BLACK;
-        this.switchLabel.font = "PixelSimple";*/
 
         this.healthLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(500, 30), text: "Health: " + GameLevel.health});
         this.healthLabel.textColor = Color.BLACK;
@@ -403,10 +392,10 @@ export default class GameLevel extends Scene {
      */
     protected addMine(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
         let mine = this.add.animatedSprite(spriteKey, "primary");
-        mine.position.set(tilePos.x*256, tilePos.y*256);
-        mine.scale.set(2, 2);
+        mine.position.set(tilePos.x*128, tilePos.y*128);
+        mine.scale.set(1, 1);
         mine.addPhysics();
-        mine.addAI(MineController, aiOptions);
+        mine.addAI(MineController, {});
         mine.setGroup("mine");
         mine.setTrigger("player", HW5_Events.PLAYER_HIT_MINE, null);
     }
@@ -428,10 +417,12 @@ export default class GameLevel extends Scene {
         if(player == undefined || mine == undefined){ //right after a mine explodes, another collision might be detected
             console.log("Not a collision");
         }
-        else if(typeof player !== undefined && mine !== undefined){
-            this.emitter.fireEvent(HW5_Events.MINE_EXPLODED, {owner: mine.id});
-            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "mine_explosion", loop: false});
-            this.incPlayerHealth(-1);
+        else if(typeof player !== undefined && mine !== undefined && mine.active == true){
+            mine.active = false
+            console.log("EXPLODED");
+            mine.animation.play("explode", false, HW5_Events.MINE_EXPLODED);
+            //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "mine_explosion", loop: false});
+            this.incPlayerHealth(-2);
         }
     }
 
@@ -461,8 +452,9 @@ export default class GameLevel extends Scene {
     protected incPlayerHealth(amt: number): void {
         GameLevel.health += amt;
         this.healthLabel.text = "Health: " + GameLevel.health;
-        if (GameLevel.health <= 0){
+        if (GameLevel.health <= 0 && !GameLevel.playerBeenKilled){
             Input.disableInput();
+            GameLevel.playerBeenKilled = true;
             this.player.disablePhysics();
             this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "player_death", loop: false, holdReference: false});
             this.emitter.fireEvent(HW5_Events.PLAYER_KILLED);
@@ -473,7 +465,7 @@ export default class GameLevel extends Scene {
      * Returns the player to spawn
      */
     protected respawnPlayer(): void {
-        this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
+        //this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
         Input.enableInput();
         this.system.stopSystem();
         this.sceneManager.changeToScene(MainMenu, {isGameOver: true});

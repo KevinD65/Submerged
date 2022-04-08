@@ -11,8 +11,9 @@ export default class Level1 extends GameLevel {
         this.load.tilemap("level1", "hw5_assets/tilemaps/SubmergedMap1.tmj");
         this.load.spritesheet("player", "hw5_assets/spritesheets/diver.json");
         this.load.spritesheet("shark", "hw5_assets/spritesheets/shark.json");
-        this.load.spritesheet("red", "hw5_assets/spritesheets/redBalloon.json");
-        this.load.spritesheet("blue", "hw5_assets/spritesheets/blueBalloon.json");
+        //this.load.spritesheet("red", "hw5_assets/spritesheets/redBalloon.json");
+        //this.load.spritesheet("blue", "hw5_assets/spritesheets/blueBalloon.json");
+        this.load.spritesheet("mine", "hw5_assets/spritesheets/mine.json")
         this.load.audio("jump", "hw5_assets/sounds/jump.wav");
         this.load.audio("switch", "hw5_assets/sounds/switch.wav");
         this.load.audio("player_death", "hw5_assets/sounds/player_death.wav");
@@ -20,7 +21,10 @@ export default class Level1 extends GameLevel {
     }
 
     unloadScene(){
-        // Keep resources - this is up to you
+        this.resourceManager.keepSpritesheet("player");
+        this.resourceManager.keepSpritesheet("shark");
+        this.resourceManager.keepSpritesheet("mine");
+        this.resourceManager.keepAudio("player_death");
     }
 
     startScene(): void {
@@ -31,8 +35,8 @@ export default class Level1 extends GameLevel {
         this.playerSpawn = new Vec2(2*128, 4*128);
 
         // Set the total switches and balloons in the level
+        this.totalMines = 1;
         this.totalSwitches = 4;
-        this.totalBalloons = 6;
 
         // Set this to a water level
         this.waterLevel = false;
@@ -46,16 +50,11 @@ export default class Level1 extends GameLevel {
 
         //hdjanwjkdnwkajdnmklamdklawmdl
 
-        /* COMMENT THIS FOR NOW! WILL REPURPOSE BALLOONS FOR MINES AND HEALTH KITS!!!!!!
+        //COMMENT THIS FOR NOW! WILL REPURPOSE BALLOONS FOR MINES AND HEALTH KITS!!!!!!
         // Add balloons of various types, just red and blue for the first level
-        for(let pos of [new Vec2(18, 8), new Vec2(25, 3), new Vec2(52, 5)]){
-            this.addMine("red", pos, {color: HW5_Color.RED});
+        for(let pos of [new Vec2(10, 5)]){
+            this.addMine("mine", pos, {});
         }
-
-        for(let pos of [new Vec2(20, 3), new Vec2(41,4), new Vec2(3, 4)]){
-            this.addMine("blue", pos, {color: HW5_Color.BLUE});
-        }
-        */
 
         //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
     }
