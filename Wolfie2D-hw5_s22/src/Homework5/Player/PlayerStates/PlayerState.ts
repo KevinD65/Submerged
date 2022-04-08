@@ -18,7 +18,7 @@ export default abstract class PlayerState extends State {
 	constructor(parent: StateMachine, owner: GameNode){
 		super(parent);
 		this.owner = owner;
-		this.gravity = this.owner.inWater ? 800 : 1500; //PLAY WITH GRAVITY NUMBERS
+		this.gravity = this.owner.inWater ? 800 : 2000; //PLAY WITH GRAVITY NUMBERS
 		this.positionTimer = new Timer(250);
 		this.positionTimer.start();
 	}
@@ -44,13 +44,27 @@ export default abstract class PlayerState extends State {
 		
 	}
 
+	updateGravity() {
+		//console.log("UPDATE GRAVITY")
+		this.gravity = this.owner.inWater ? 800 : 2000;
+		//console.log("this.owner.inWater: " + this.owner.inWater);
+	}
+
 	update(deltaT: number): void {
 		// Do gravity
 		this.updateSuit();
+
+		//console.log("UPDATE GRAVITY")
+		//console.log("this.waterLevel: " + this.waterLevel)
+		//console.log("this.owner.inWater: " + this.owner.inWater)
+		this.updateGravity();
+
 		if (this.positionTimer.isStopped()){
 			this.emitter.fireEvent(HW5_Events.PLAYER_MOVE, {position: this.owner.position.clone()});
 			this.positionTimer.start();
 		}
 		this.parent.velocity.y += this.gravity*deltaT;
+
+		//this.emitter.fireEvent(HW5_Events.PLAYER_ENTERED_LEVEL_END, {position: this.owner.position.clone()});
 	}
 }

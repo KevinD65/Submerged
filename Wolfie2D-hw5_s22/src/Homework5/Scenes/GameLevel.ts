@@ -168,14 +168,19 @@ export default class GameLevel extends Scene {
                 case HW5_Events.PLAYER_ENTERED_LEVEL_END:
                     {
                         console.log("LEVEL END FIRED");
+                        //console.log("LEVEL1: " + this.waterLevel);
+                        this.waterLevel = true;
+                        //console.log("LEVEL2: " + this.waterLevel);
+
                         if(!this.levelEndTimer.hasRun() && this.levelEndTimer.isStopped()){
                             // The player has reached the end of the level
                             this.levelEndTimer.start();
                             this.levelEndLabel.tweens.play("slideIn");
                         }
-                        
                     }
                     break;
+
+                
 
                 case HW5_Events.LEVEL_START:
                     {
@@ -203,6 +208,7 @@ export default class GameLevel extends Scene {
                         }
                     }
                     break;
+
                 case HW5_Events.PLAYER_KILLED:
                     {
                         if(!GameLevel.deathTimerFlag && this.levelEndTimer.isStopped()){ //we check if the levelEndTimer has run in case a player dies after reaching the level end

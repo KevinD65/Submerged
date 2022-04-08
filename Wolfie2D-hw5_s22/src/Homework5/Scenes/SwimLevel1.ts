@@ -39,7 +39,7 @@ export default class Level1 extends GameLevel {
         this.totalSwitches = 4;
 
         // Set this to a water level
-        this.waterLevel = false;
+        this.waterLevel = true;
 
         // Do generic setup for a GameLevel
         super.startScene();
@@ -57,6 +57,7 @@ export default class Level1 extends GameLevel {
         }
 
         //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
+        //console.log("LEVEL1: " + this.waterLevel)
     }
 
     updateScene(deltaT: number): void {

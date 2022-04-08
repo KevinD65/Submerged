@@ -16,8 +16,7 @@ export default class Level2 extends GameLevel {
         this.load.tilemap("level2", "hw5_assets/tilemaps/CaveBossLevel1.tmj");
         this.load.spritesheet("player", "hw5_assets/spritesheets/diver.json");
         this.load.spritesheet("shark", "hw5_assets/spritesheets/shark.json");
-        //this.load.spritesheet("red", "hw5_assets/spritesheets/redBalloon.json");
-        //this.load.spritesheet("blue", "hw5_assets/spritesheets/blueBalloon.json");
+
         this.load.spritesheet("mine", "hw5_assets/spritesheets/mine.json")
         this.load.audio("jump", "hw5_assets/sounds/jump.wav");
         this.load.audio("switch", "hw5_assets/sounds/switch.wav");
@@ -33,7 +32,7 @@ export default class Level2 extends GameLevel {
     }
 
     startScene(): void {
-        // Add the level 1 tilemap
+        // Add the level 2 tilemap
         this.add.tilemap("level2", new Vec2(0.5, 0.5));
         this.viewport.setBounds(0, 0, 81*256, 10*256);
 
@@ -49,7 +48,7 @@ export default class Level2 extends GameLevel {
         // Do generic setup for a GameLevel
         super.startScene();
 
-        this.addLevelEnd(new Vec2(75, 5), new Vec2(5, 5));
+        //this.addLevelEnd(new Vec2(75, 5), new Vec2(5, 5));
 
         //this.nextLevel = Level2;
 
@@ -58,6 +57,9 @@ export default class Level2 extends GameLevel {
         for(let pos of [new Vec2(10, 5)]){
             this.addMine("mine", pos, {});
         }
+
+        //console.log("LEVEL2: " + this.waterLevel);
+        //console.log(this.player.);
 
         //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
     }
