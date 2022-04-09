@@ -189,10 +189,9 @@ export default class GameLevel extends Scene {
                         if(this.waterLevel == true) //WATER LEVEL
                         {
                             //console.log(event.data);
-                            console.log(event.data.set("gravity", 7000));
+                            event.data.set("gravity", 7000);
                             //event.data.set("inWater", false)
-                            console.log(event.data);
-                            //this.gravity = 1;
+                            //console.log(event.data);
                         }
                         else //LAND LEVEL
                         {
