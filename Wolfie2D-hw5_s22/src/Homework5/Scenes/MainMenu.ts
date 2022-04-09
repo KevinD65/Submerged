@@ -214,6 +214,11 @@ export default class MainMenu extends Scene {
         control5.textColor = Color.fromStringHex("BB0070");
         control5.fontSize = 20;
 
+        const controlText6 = "Pause Game: Q";
+        const control6 = <Label>this.add.uiElement(UIElementType.LABEL, "Controls", {position: new Vec2(size.x, size.y+180), text: controlText6});
+        control6.textColor = Color.fromStringHex("BB0070");
+        control6.fontSize = 20;
+
         //Back Button
         const back2 = <Button>this.add.uiElement(UIElementType.BUTTON, "Controls", {position: new Vec2(size.x, size.y + 200), text: "Back To Menu"});
         back2.backgroundColor = Color.fromStringHex("00BDF9");
