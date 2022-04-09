@@ -220,7 +220,7 @@ export default class MainMenu extends Scene {
         control6.fontSize = 20;
 
         //Back Button
-        const back2 = <Button>this.add.uiElement(UIElementType.BUTTON, "Controls", {position: new Vec2(size.x, size.y + 200), text: "Back To Menu"});
+        const back2 = <Button>this.add.uiElement(UIElementType.BUTTON, "Controls", {position: new Vec2(size.x, size.y + 240), text: "Back To Menu"});
         back2.backgroundColor = Color.fromStringHex("00BDF9");
         back2.borderColor = Color.fromStringHex("00BDF9");
         back2.borderRadius = 20;
