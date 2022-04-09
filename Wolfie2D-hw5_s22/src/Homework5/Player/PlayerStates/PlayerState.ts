@@ -46,7 +46,15 @@ export default abstract class PlayerState extends State {
 
 	updateGravity() {
 		//console.log("UPDATE GRAVITY")
-		this.gravity = this.owner.inWater ? 800 : 2000;
+		if(this.owner.inWater == true) //WATER
+		{
+			this.gravity = 800
+		}
+		else //LAND
+		{
+			this.gravity = 7000;
+		}
+		//this.gravity = this.owner.inWater ? 800 : 2000;
 		//console.log("this.owner.inWater: " + this.owner.inWater);
 	}
 
@@ -57,14 +65,17 @@ export default abstract class PlayerState extends State {
 		//console.log("UPDATE GRAVITY")
 		//console.log("this.waterLevel: " + this.waterLevel)
 		//console.log("this.owner.inWater: " + this.owner.inWater)
+		//this.emitter.fireEvent(HW5_Events.UPDATE_GRAVITY, {inWater: this.owner.inWater});
+		//console.log(this.owner.inWater)
+		this.emitter.fireEvent(HW5_Events.UPDATE_GRAVITY, {gravity: this.gravity});
 		this.updateGravity();
+
+		//console.log("inWater: " + this.owner.inWater);
 
 		if (this.positionTimer.isStopped()){
 			this.emitter.fireEvent(HW5_Events.PLAYER_MOVE, {position: this.owner.position.clone()});
 			this.positionTimer.start();
 		}
 		this.parent.velocity.y += this.gravity*deltaT;
-
-		//this.emitter.fireEvent(HW5_Events.PLAYER_ENTERED_LEVEL_END, {position: this.owner.position.clone()});
 	}
 }

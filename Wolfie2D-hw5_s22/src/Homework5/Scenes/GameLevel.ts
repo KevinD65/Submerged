@@ -167,9 +167,9 @@ export default class GameLevel extends Scene {
                     
                 case HW5_Events.PLAYER_ENTERED_LEVEL_END:
                     {
-                        console.log("LEVEL END FIRED");
+                        //console.log("LEVEL END FIRED");
                         //console.log("LEVEL1: " + this.waterLevel);
-                        this.waterLevel = true;
+                        //this.waterLevel = true;
                         //console.log("LEVEL2: " + this.waterLevel);
 
                         if(!this.levelEndTimer.hasRun() && this.levelEndTimer.isStopped()){
@@ -180,7 +180,26 @@ export default class GameLevel extends Scene {
                     }
                     break;
 
-                
+                case HW5_Events.UPDATE_GRAVITY:
+                    {
+                        //console.log("UPDATE_GRAVITY EVENT FIRED");
+                        //console.log("LEVEL1: " + this.waterLevel);
+                        //this.waterLevel = true;
+                        //console.log("LEVEL2: " + this.waterLevel);
+                        if(this.waterLevel == true) //WATER LEVEL
+                        {
+                            //console.log(event.data);
+                            console.log(event.data.set("gravity", 7000));
+                            //event.data.set("inWater", false)
+                            console.log(event.data);
+                            //this.gravity = 1;
+                        }
+                        else //LAND LEVEL
+                        {
+                            //event.data.set("inWater", false)
+                        }
+                    }
+                    break;
 
                 case HW5_Events.LEVEL_START:
                     {
@@ -270,6 +289,7 @@ export default class GameLevel extends Scene {
             HW5_Events.PLAYER_HIT_MINE,
             HW5_Events.MINE_EXPLODED,
             HW5_Events.PLAYER_ENTERED_LEVEL_END,
+            HW5_Events.UPDATE_GRAVITY,
             HW5_Events.LEVEL_START,
             HW5_Events.LEVEL_END,
             HW5_Events.PLAYER_KILLED
