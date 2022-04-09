@@ -52,7 +52,7 @@ export default abstract class PlayerState extends State {
 		}
 		else //LAND
 		{
-			this.gravity = 7000;
+			this.gravity = 1500;
 		}
 		//this.gravity = this.owner.inWater ? 800 : 2000;
 		//console.log("this.owner.inWater: " + this.owner.inWater);

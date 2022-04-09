@@ -14,6 +14,7 @@ export default class Level2 extends GameLevel {
      loadScene(): void {
         // Load resources
         this.load.tilemap("level2", "hw5_assets/tilemaps/CaveBossLevel1.tmj");
+        //this.load.tilemap("level1", "hw5_assets/tilemaps/SubmergedMap1.tmj");
         this.load.spritesheet("player", "hw5_assets/spritesheets/diver.json");
         this.load.spritesheet("shark", "hw5_assets/spritesheets/shark.json");
 
@@ -36,7 +37,7 @@ export default class Level2 extends GameLevel {
         this.add.tilemap("level2", new Vec2(0.5, 0.5));
         this.viewport.setBounds(0, 0, 81*256, 10*256);
 
-        this.playerSpawn = new Vec2(2*128, 4*128);
+        this.playerSpawn = new Vec2(2*230, 4*128);
 
         // Set the total switches and balloons in the level
         this.totalMines = 1;
