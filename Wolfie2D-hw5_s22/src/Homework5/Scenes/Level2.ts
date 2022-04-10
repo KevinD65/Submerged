@@ -8,10 +8,10 @@ export default class Level2 extends GameLevel {
     // HOMEWORK 5 - TODO
     /**
      * Decide which resource to keep and which to cull.
-     * 
+     *
      * Not all of these loads are needed. Decide which to remove and handle keeping resources in Level1
      */
-    loadScene(): void {
+     loadScene(): void {
         // Load resources
         this.load.tilemap("level2", "hw5_assets/tilemaps/SubmergedMap2.tmj");
         this.load.spritesheet("player", "hw5_assets/spritesheets/diver.json");
@@ -23,6 +23,13 @@ export default class Level2 extends GameLevel {
         this.load.audio("switch", "hw5_assets/sounds/switch.wav");
         this.load.audio("player_death", "hw5_assets/sounds/player_death.wav");
         this.load.audio("level_music", "hw5_assets/music/menu.mp3");
+    }
+
+    unloadScene(){
+        this.resourceManager.keepSpritesheet("player");
+        this.resourceManager.keepSpritesheet("shark");
+        this.resourceManager.keepSpritesheet("mine");
+        this.resourceManager.keepAudio("player_death");
     }
 
     startScene(): void {
@@ -48,8 +55,10 @@ export default class Level2 extends GameLevel {
             this.addMine("red", pos, {color: HW5_Color.RED});
         }
 
-        for(let pos of [new Vec2(3, 4), new Vec2(33, 10)]){
-            this.addMine("green", pos, {color: HW5_Color.GREEN});
+        //COMMENT THIS FOR NOW! WILL REPURPOSE BALLOONS FOR MINES AND HEALTH KITS!!!!!!
+        // Add balloons of various types, just red and blue for the first level
+        for(let pos of [new Vec2(10, 5)]){
+            this.addMine("mine", pos, {});
         }
 
         for(let pos of [new Vec2(20, 3), new Vec2(41,4)]){

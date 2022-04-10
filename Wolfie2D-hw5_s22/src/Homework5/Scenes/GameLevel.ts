@@ -10,6 +10,8 @@ import Rect from "../../Wolfie2D/Nodes/Graphics/Rect";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 import { UIElementType } from "../../Wolfie2D/Nodes/UIElements/UIElementTypes";
+import Layer from "../../Wolfie2D/Scene/Layer";
+import Button from "../../Wolfie2D/Nodes/UIElements/Button";
 import Scene from "../../Wolfie2D/Scene/Scene";
 import Timer from "../../Wolfie2D/Timing/Timer";
 import Color from "../../Wolfie2D/Utils/Color";
@@ -68,10 +70,24 @@ export default class GameLevel extends Scene {
     // Boolean determining whether or not this is a water level
     protected waterLevel: boolean;
 
+    //Paused boolean
+    protected paused: boolean;
+
+    //Screen layers
+    protected gameLayer: Layer;
+    protected uiLayer: Layer;
+    protected pauseScreen: Layer;
+
+    //Pause screen UI
+    protected titleP: Label;
+    protected buttonP1: Button;
+    protected buttonP2: Button;
+
     startScene(): void {
         this.totalMines = 0;
         this.switchesPressed = 0;
         GameLevel.health = 3;
+        this.paused = false;
 
         // Do the game level standard initializations
         this.initLayers();
@@ -111,126 +127,167 @@ export default class GameLevel extends Scene {
 
     updateScene(deltaT: number){
         // Handle events and update the UI if needed
-        while(this.receiver.hasNextEvent()){
-            let event = this.receiver.getNextEvent();
-            
-            switch(event.type){
-                case HW5_Events.PLAYER_HIT_SPIKES:
-                    {
-                        // If the player hit spikes, decrement the health and display the updated health
-                        if(!GameLevel.playerBeenKilled){
-                            this.player.animation.play("damage");
-                            this.incPlayerHealth(-1);
-                            this.healthLabel.text = "Health: " + GameLevel.health;
-                            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "switch", loop: false, holdReference: false}); //CHANGE THIS TO A SPIKE SOUND
-                        }
-                    }
-                    break;
-
-                case HW5_Events.PLAYER_HIT_MINE:
-                    {
-                        this.player.animation.play("damage");
-                        let node = this.sceneGraph.getNode(event.data.get("node"));
-                        let other = this.sceneGraph.getNode(event.data.get("other"));
-
-                        if(node === this.player){
-                            // Node is player, other is mine
-                            this.handlePlayerMineCollision(<AnimatedSprite>node, <AnimatedSprite>other);
-                        } else {
-                            // Other is player, node is mine
-                            this.handlePlayerMineCollision(<AnimatedSprite>other,<AnimatedSprite>node);
-
-                        }
-                    }
-                    break;
-
-                case HW5_Events.MINE_EXPLODED:
-                    {
-                        this.totalMines = this.totalMines - 1;
-                        let node = this.sceneGraph.getNode(event.data.get("owner"));
-                        
-                        // Set mass based on color
-                        let particleMass = 0;
-                        if ((<MineController>node._ai).color == HW5_Color.RED) {
-                            particleMass = 1;
-                        }
-                        else if ((<MineController>node._ai).color == HW5_Color.GREEN) {
-                            particleMass = 2;
-                        }
-                        else {
-                            particleMass = 3;
-                        }
-                        this.system.startSystem(2000, particleMass, node.position.clone());
-                        node.destroy();
-                    }
-                    break;
-                    
-                case HW5_Events.PLAYER_ENTERED_LEVEL_END:
-                    {
-                        console.log("LEVEL END FIRED");
-                        if(!this.levelEndTimer.hasRun() && this.levelEndTimer.isStopped()){
-                            // The player has reached the end of the level
-                            this.levelEndTimer.start();
-                            this.levelEndLabel.tweens.play("slideIn");
-                        }
-                        
-                    }
-                    break;
-
-                case HW5_Events.LEVEL_START:
-                    {
-                        // Re-enable controls
-                        Input.enableInput();
-                    }
-                    break;
+        if(!this.paused){
+            while(this.receiver.hasNextEvent()){
+                let event = this.receiver.getNextEvent();
                 
-                case HW5_Events.LEVEL_END:
-                    {
-                        // Go to the next level
-                        if(this.nextLevel){
-                            let sceneOptions = {
-                                physics: {
-                                    groupNames: ["ground", "player", "mine"],
-                                    collisions:
-                                    [
-                                        [0, 1, 1],
-                                        [1, 0, 0],
-                                        [1, 0, 0]
-                                    ]
-                                }
+                switch(event.type){
+                    case HW5_Events.PLAYER_HIT_SPIKES:
+                        {
+                            // If the player hit spikes, decrement the health and display the updated health
+                            if(!GameLevel.playerBeenKilled){
+                                this.player.animation.play("damage");
+                                this.incPlayerHealth(-1);
+                                this.healthLabel.text = "Health: " + GameLevel.health;
+                                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "switch", loop: false, holdReference: false}); //CHANGE THIS TO A SPIKE SOUND
                             }
-                            this.sceneManager.changeToScene(this.nextLevel, {}, sceneOptions);
                         }
-                    }
-                    break;
-                case HW5_Events.PLAYER_KILLED:
-                    {
-                        if(!GameLevel.deathTimerFlag && this.levelEndTimer.isStopped()){ //we check if the levelEndTimer has run in case a player dies after reaching the level end
-                            console.log("HOW MANY?");
-                            this.player.animation.play("dying");
-                            this.player.animation.play("dead");
-                            GameLevel.deathTimerFlag = true;
-                            this.deathTimer.start();
+                        break;
+
+                    case HW5_Events.PLAYER_HIT_MINE:
+                        {
+                            this.player.animation.play("damage");
+                            let node = this.sceneGraph.getNode(event.data.get("node"));
+                            let other = this.sceneGraph.getNode(event.data.get("other"));
+
+                            if(node === this.player){
+                                // Node is player, other is mine
+                                this.handlePlayerMineCollision(<AnimatedSprite>node, <AnimatedSprite>other);
+                            } else {
+                                // Other is player, node is mine
+                                this.handlePlayerMineCollision(<AnimatedSprite>other,<AnimatedSprite>node);
+
+                            }
                         }
-                        else if(!GameLevel.deathTimerFlag && (this.levelEndTimer.isStopped() && !this.levelEndTimer.hasRun())){
-                            console.log("HOW MANY?");
-                            this.player.animation.play("dying");
-                            this.player.animation.play("dead");
-                            GameLevel.deathTimerFlag = true;
-                            this.deathTimer.start();
+                        break;
+
+                    case HW5_Events.MINE_EXPLODED:
+                        {
+                            this.totalMines = this.totalMines - 1;
+                            let node = this.sceneGraph.getNode(event.data.get("owner"));
+                            
+                            // Set mass based on color
+                            let particleMass = 0;
+                            if ((<MineController>node._ai).color == HW5_Color.RED) {
+                                particleMass = 1;
+                            }
+                            else if ((<MineController>node._ai).color == HW5_Color.GREEN) {
+                                particleMass = 2;
+                            }
+                            else {
+                                particleMass = 3;
+                            }
+                            this.system.startSystem(2000, particleMass, node.position.clone());
+                            node.destroy();
                         }
-                    }
+                        break;
+                        
+                    case HW5_Events.PLAYER_ENTERED_LEVEL_END:
+                        {
+                            //console.log("LEVEL END FIRED");
+                            //console.log("LEVEL1: " + this.waterLevel);
+                            //this.waterLevel = true;
+                            //console.log("LEVEL2: " + this.waterLevel);
+
+                            if(!this.levelEndTimer.hasRun() && this.levelEndTimer.isStopped()){
+                                // The player has reached the end of the level
+                                this.levelEndTimer.start();
+                                this.levelEndLabel.tweens.play("slideIn");
+                            }
+                        }
+                        break;
+
+                    case HW5_Events.UPDATE_GRAVITY:
+                        {
+                            //console.log("UPDATE_GRAVITY EVENT FIRED");
+                            //console.log("LEVEL1: " + this.waterLevel);
+                            //this.waterLevel = true;
+                            //console.log("LEVEL2: " + this.waterLevel);
+                            if(this.waterLevel == true) //WATER LEVEL
+                            {
+                                //console.log(event.data);
+                                //event.data.set("gravity", 7000);
+                                //event.data.set("inWater", false)
+                                //console.log(event.data);
+                            }
+                            else //LAND LEVEL
+                            {
+                                //event.data.set("inWater", false)
+                                this.player.inWater = false;
+                            }
+                        }
+                        break;
+
+                    case HW5_Events.LEVEL_START:
+                        {
+                            // Re-enable controls
+                            Input.enableInput();
+                        }
+                        break;
+                    
+                    case HW5_Events.LEVEL_END:
+                        {
+                            // Go to the next level
+                            if(this.nextLevel){
+                                let sceneOptions = {
+                                    physics: {
+                                        groupNames: ["ground", "player", "mine"],
+                                        collisions:
+                                        [
+                                            [0, 1, 1],
+                                            [1, 0, 0],
+                                            [1, 0, 0]
+                                        ]
+                                    }
+                                }
+                                this.sceneManager.changeToScene(this.nextLevel, {}, sceneOptions);
+                            }
+                        }
+                        break;
+
+                    case HW5_Events.PLAYER_KILLED:
+                        {
+                            if(!GameLevel.deathTimerFlag && this.levelEndTimer.isStopped()){ //we check if the levelEndTimer has run in case a player dies after reaching the level end
+                                console.log("HOW MANY?");
+                                this.player.animation.play("dying");
+                                this.player.animation.play("dead");
+                                GameLevel.deathTimerFlag = true;
+                                this.deathTimer.start();
+                            }
+                            else if(!GameLevel.deathTimerFlag && (this.levelEndTimer.isStopped() && !this.levelEndTimer.hasRun())){
+                                console.log("HOW MANY?");
+                                this.player.animation.play("dying");
+                                this.player.animation.play("dead");
+                                GameLevel.deathTimerFlag = true;
+                                this.deathTimer.start();
+                            }
+                        }
+                }
+            }
+
+            this.handleSharkPlayerCollision(this.player,this.shark);
+
+            if(this.deathTimer.isStopped() && GameLevel.deathTimerFlag == true){
+                GameLevel.deathTimerFlag = false;
+                this.deathTimer.reset();
+                GameLevel.playerBeenKilled = false;
+                this.respawnPlayer();
+            }
+
+            if(Input.isKeyPressed("q"))
+            {
+                this.pauseGame();
+                this.paused = true;
             }
         }
-
-        this.handleSharkPlayerCollision(this.player,this.shark);
-
-        if(this.deathTimer.isStopped() && GameLevel.deathTimerFlag == true){
-            GameLevel.deathTimerFlag = false;
-            this.deathTimer.reset();
-            GameLevel.playerBeenKilled = false;
-            this.respawnPlayer();
-        }
+        else
+        {
+            if(Input.isKeyPressed("r"))
+            {
+                this.unpauseGame();
+                this.paused = false;
+            }
+        }    
     }
 
     /**
@@ -238,10 +295,47 @@ export default class GameLevel extends Scene {
      */
     protected initLayers(): void {
         // Add a layer for UI
-        this.addUILayer("UI");
+        this.uiLayer = this.addUILayer("UI");
 
         // Add a layer for players and enemies
-        this.addLayer("primary", 1);
+        this.gameLayer = this.addLayer("primary", 1);
+
+        //Create pause screen
+        this.pauseScreen = this.addLayer("pause");
+        this.pauseScreen.setHidden(true);
+
+        let posX = this.viewport.getCenter().x;
+        let posY = this.viewport.getCenter().y;
+
+        this.titleP = <Label>this.add.uiElement(UIElementType.LABEL, "pause", {position: new Vec2(posX, posY - 200), text: "Paused"});
+        this.titleP.textColor = Color.fromStringHex("BB0070");
+        this.titleP.fontSize = 100;
+
+        this.buttonP1 = <Button>this.add.uiElement(UIElementType.BUTTON, "pause", {position: new Vec2(posX, posY), text: "Resume"});
+        this.buttonP1.backgroundColor = Color.fromStringHex("00BDF9");
+        this.buttonP1.borderColor = Color.fromStringHex("00BDF9");
+        this.buttonP1.borderRadius = 20;
+        this.buttonP1.setPadding(new Vec2(50, 10));
+        this.buttonP1.font = "PixelSimple";
+        this.buttonP1.textColor = Color.fromStringHex("BB0070");
+
+        this.buttonP2 = <Button>this.add.uiElement(UIElementType.BUTTON, "pause", {position: new Vec2(posX, posY + 200), text: "Back To Menu"});
+        this.buttonP2.backgroundColor = Color.fromStringHex("00BDF9");
+        this.buttonP2.borderColor = Color.fromStringHex("00BDF9");
+        this.buttonP2.borderRadius = 20;
+        this.buttonP2.setPadding(new Vec2(50, 10));
+        this.buttonP2.font = "PixelSimple";
+        this.buttonP2.textColor = Color.fromStringHex("BB0070");
+
+        this.buttonP1.onClick = () => {
+            this.unpauseGame();
+            this.paused = false;
+        }
+
+        this.buttonP2.onClick = () => {
+            this.exitGame();
+        }
+
     }
 
     /**
@@ -264,6 +358,7 @@ export default class GameLevel extends Scene {
             HW5_Events.PLAYER_HIT_MINE,
             HW5_Events.MINE_EXPLODED,
             HW5_Events.PLAYER_ENTERED_LEVEL_END,
+            HW5_Events.UPDATE_GRAVITY,
             HW5_Events.LEVEL_START,
             HW5_Events.LEVEL_END,
             HW5_Events.PLAYER_KILLED
@@ -469,5 +564,31 @@ export default class GameLevel extends Scene {
         Input.enableInput();
         this.system.stopSystem();
         this.sceneManager.changeToScene(MainMenu, {isGameOver: true});
+    }
+
+    protected exitGame(): void{
+        Input.enableInput();
+        this.system.stopSystem();
+        this.sceneManager.changeToScene(MainMenu, {isGameOver: false});
+    }
+
+    protected pauseGame(): void{
+        this.player.disablePhysics();
+        this.player.setAIActive(false,{});
+        this.shark.setAIActive(false,{});
+        this.pauseScreen.setHidden(false);
+        this.uiLayer.setHidden(true);
+        this.gameLayer.setHidden(true);
+        this.viewport.follow(this.buttonP1);
+    }
+
+    protected unpauseGame(): void{
+        this.player.enablePhysics();
+        this.player.setAIActive(true,{});
+        this.shark.setAIActive(true,{});
+        this.pauseScreen.setHidden(true);
+        this.uiLayer.setHidden(false);
+        this.gameLayer.setHidden(false);
+        this.viewport.follow(this.player);
     }
 }

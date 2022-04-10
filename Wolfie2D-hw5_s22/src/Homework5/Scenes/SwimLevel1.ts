@@ -55,6 +55,7 @@ export default class Level1 extends GameLevel {
         }
 
         //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
+        //console.log("LEVEL1: " + this.waterLevel)
     }
 
     updateScene(deltaT: number): void {

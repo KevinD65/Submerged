@@ -126,8 +126,8 @@ export default class PlayerController extends StateMachineAI {
         let tileBehind = this.tilemap.getTileAtRowCol(new Vec2(checkSpikesBehind.x, checkSpikesBehind.y));
 
         //CHECK IF THE PLAYER IS IN CONTACT WITH A SPIKED TILE
-        console.log(tileAbove);
-        console.log(tileBelow);
+        //console.log(tileAbove);
+        //console.log(tileBelow);
         if(tileAbove == 1 || tileAbove == 2 || tileAbove == 3 || tileAbove == 6 || tileAbove == 7 || tileAbove == 15 || tileAbove == 17 || tileAbove == 18){
             if(this.damageCooldown == -1 || this.damageCooldown == 0){
                 this.damageCooldown = 30;
