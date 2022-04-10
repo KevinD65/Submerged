@@ -39,7 +39,7 @@ export default class Level1 extends GameLevel {
         this.totalSwitches = 4;
 
         // Set this to a water level
-        this.waterLevel = false;
+        this.waterLevel = true;
 
         // Do generic setup for a GameLevel
         super.startScene();
@@ -47,8 +47,6 @@ export default class Level1 extends GameLevel {
         this.addLevelEnd(new Vec2(75, 5), new Vec2(5, 5));
 
         this.nextLevel = Level2;
-
-        //hdjanwjkdnwkajdnmklamdklawmdl
 
         //COMMENT THIS FOR NOW! WILL REPURPOSE BALLOONS FOR MINES AND HEALTH KITS!!!!!!
         // Add balloons of various types, just red and blue for the first level
