@@ -122,6 +122,7 @@ export default class GameLevel extends Scene {
         // Initially disable player movement
         Input.disableInput();
         this.emitter.fireEvent(HW5_Events.SUIT_COLOR_CHANGE, {color: HW5_Color.RED});
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "gameplay", loop: true, holdReference: true});
     }
 
 
@@ -342,8 +343,6 @@ export default class GameLevel extends Scene {
      * Initializes the viewport
      */
     protected initViewport(): void {
-        console.log(this.viewport.getCenter());
-        console.log(this.viewport.getZoomLevel());
         this.viewport.setZoomLevel(1);
         
     }
