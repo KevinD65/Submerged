@@ -2,7 +2,7 @@ import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import SharkState from "./SharkState";
 
-export default class Sinking extends SharkState {
+export default class Swimming extends SharkState {
 	
 	onEnter(): void {
         this.gravity = 0;
