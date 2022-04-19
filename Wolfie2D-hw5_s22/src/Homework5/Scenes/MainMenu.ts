@@ -10,7 +10,9 @@ import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
 import Layer from "../../Wolfie2D/Scene/Layer";
 import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 import Input from "../../Wolfie2D/Input/Input";
-import Level2 from "./Level2";
+import Level2 from "./SwimLevel2";
+import Level3 from "./SwimLevel3";
+
 
 export default class MainMenu extends Scene {
 
@@ -341,6 +343,10 @@ export default class MainMenu extends Scene {
 
         level2.onClick = () => {
             this.sceneManager.changeToScene(Level2, {}, sceneOptions);
+        }
+
+        level3.onClick = () => {
+            this.sceneManager.changeToScene(Level3, {}, sceneOptions);
         }
 
         back4.onClick = () => {
