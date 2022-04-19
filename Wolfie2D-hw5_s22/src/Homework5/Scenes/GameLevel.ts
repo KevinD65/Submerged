@@ -122,6 +122,7 @@ export default class GameLevel extends Scene {
         // Initially disable player movement
         Input.disableInput();
         this.emitter.fireEvent(HW5_Events.SUIT_COLOR_CHANGE, {color: HW5_Color.RED});
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "gameplay", loop: true, holdReference: true});
     }
 
 
@@ -342,8 +343,6 @@ export default class GameLevel extends Scene {
      * Initializes the viewport
      */
     protected initViewport(): void {
-        console.log(this.viewport.getCenter());
-        console.log(this.viewport.getZoomLevel());
         this.viewport.setZoomLevel(1);
         
     }
@@ -461,12 +460,20 @@ export default class GameLevel extends Scene {
      * Initializes the Shark
      */
      protected initShark(): void {
-        // Add the player
-        this.shark = this.add.animatedSprite("shark", "primary");
-        //this.player.scale.set(2, 2);
-        let sharkSpawn = new Vec2(-6*128, 6*128);
-        this.shark.position.copy(sharkSpawn);
-        this.shark.addAI(SharkController, {});
+        if(this.waterLevel)
+        {
+            this.shark = this.add.animatedSprite("shark", "primary");
+            let sharkSpawn = new Vec2(-6*128, 6*128);
+            this.shark.position.copy(sharkSpawn);
+        }
+        else{
+            this.shark = this.add.animatedSprite("player", "primary");
+            this.shark.addPhysics(new AABB(Vec2.ZERO, new Vec2(14, 14)));
+            this.shark.colliderOffset.set(0, 2);
+            let sharkSpawn = new Vec2(2*128, 4*128);
+            this.shark.position.copy(sharkSpawn);
+        }
+        this.shark.addAI(SharkController, {inWater: this.waterLevel, tilemap: "Background"});
     }
 
     /**
@@ -497,7 +504,7 @@ export default class GameLevel extends Scene {
 
     protected handleSharkPlayerCollision(player: AnimatedSprite, shark: AnimatedSprite)
     {
-        if(player.position.x<(shark.position.x+shark.size.x/4))
+        if(player.position.x<(shark.position.x+shark.size.x/4) && !this.waterLevel)
         {
             this.emitter.fireEvent(HW5_Events.PLAYER_KILLED, {});
         }

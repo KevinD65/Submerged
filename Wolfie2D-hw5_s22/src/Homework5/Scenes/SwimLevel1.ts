@@ -17,7 +17,7 @@ export default class Level1 extends GameLevel {
         this.load.audio("jump", "hw5_assets/sounds/jump.wav");
         this.load.audio("switch", "hw5_assets/sounds/switch.wav");
         this.load.audio("player_death", "hw5_assets/sounds/player_death.wav");
-        this.load.audio("level_music", "hw5_assets/music/menu.mp3");
+        this.load.audio("level_music", "hw5_assets/music/gameplay.mp3");
     }
 
     unloadScene(){
@@ -25,6 +25,7 @@ export default class Level1 extends GameLevel {
         this.resourceManager.keepSpritesheet("shark");
         this.resourceManager.keepSpritesheet("mine");
         this.resourceManager.keepAudio("player_death");
+        this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
     }
 
     startScene(): void {
@@ -54,7 +55,7 @@ export default class Level1 extends GameLevel {
             this.addMine("mine", pos, {});
         }
 
-        //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
     }
 
     updateScene(deltaT: number): void {
