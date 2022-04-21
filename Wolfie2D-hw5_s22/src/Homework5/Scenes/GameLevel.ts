@@ -146,7 +146,7 @@ export default class GameLevel extends Scene {
                                 this.player.animation.play("damage");
                                 this.incPlayerHealth(-1);
                                 this.healthLabel.text = "Health: " + GameLevel.health;
-                                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "switch", loop: false, holdReference: false}); //CHANGE THIS TO A SPIKE SOUND
+                                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "damage", loop: false, holdReference: false}); //CHANGE THIS TO A SPIKE SOUND
                             }
                         }
                         break;
