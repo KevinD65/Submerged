@@ -2,6 +2,7 @@ export enum HW5_Events {
     PLAYER_MOVE = "PlayerMove",
     PLAYER_JUMP = "PlayerJump",
     PLAYER_HIT_SWITCH = "PlayerHitSwitch",
+    SPIKES_FALL = "SpikesFall",
     PLAYER_HIT_HEALTH = "PlayerHitHealth",
     PLAYER_HIT_SPIKES = "PlayerHitSpikes",
     /*PLAYER_HIT_BALLOON = "PlayerHitEBalloon"*/PLAYER_HIT_MINE = "PlayerHitMine",

@@ -38,7 +38,8 @@ export default class Level2 extends GameLevel {
 
         this.playerSpawn = new Vec2(4*256, 3*256);
         //this.totalSwitches = 7;
-
+        this.totalFallingSpikes = 0;
+        
         this.waterLevel = true;
 
         // Do generic setup for a GameLevel

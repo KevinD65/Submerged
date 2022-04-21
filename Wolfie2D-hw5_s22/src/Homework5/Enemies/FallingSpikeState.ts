@@ -6,12 +6,12 @@ import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import MathUtils from "../../Wolfie2D/Utils/MathUtils";
 import { HW5_Color } from "../hw5_color";
 import { HW5_Events } from "../hw5_enums";
-import SharkController, { SharkStates } from "./SharkController";
+import FallingSpikeController, { FallingSpikeStates } from "./FallingSpikeController";
 
-export default abstract class SharkState extends State {
+export default abstract class FallingSpikeState extends State {
 	owner: GameNode;
-	gravity: number = 1000;
-	parent: SharkController;
+	gravity: number = 0;
+	parent: FallingSpikeController;
 
 	constructor(parent: StateMachine, owner: GameNode) {
 		super(parent);
@@ -19,12 +19,13 @@ export default abstract class SharkState extends State {
 		this.owner = owner;
 	}
 
-	/**
-	 * Here is where the states are defined for handling Shark gravity effects. We recieve a player suit change event 
-	 * and adjust the Shark gravity effects accordingly based on its color
-	 */
 	handleInput(event: GameEvent): void {
-		
+		if(event.type == HW5_Events.SPIKES_FALL){
+            let spikeID = event.data.get("SpikeID");
+            console.log("HANDLING " + this.parent.ID + " WITH " + spikeID);
+            if(this.parent.ID == spikeID)
+                this.finished(FallingSpikeStates.FALLING);
+        }
 	}
 
 	update(deltaT: number): void {

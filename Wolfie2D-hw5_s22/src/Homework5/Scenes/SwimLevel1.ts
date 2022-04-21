@@ -38,6 +38,7 @@ export default class Level1 extends GameLevel {
         // Set the total switches and balloons in the level
         this.totalMines = 1;
         this.totalSwitches = 4;
+        this.totalFallingSpikes = 0;
 
         // Set this to a water level
         this.waterLevel = true;

@@ -17,6 +17,7 @@ import Timer from "../../Wolfie2D/Timing/Timer";
 import Color from "../../Wolfie2D/Utils/Color";
 import { EaseFunctionType } from "../../Wolfie2D/Utils/EaseFunctions";
 import MineController from "../Enemies/MineController";
+import FallingSpikeController from "../Enemies/FallingSpikeController";
 import SharkController from "../Enemies/SharkController";
 import { HW5_Color } from "../hw5_color";
 import { HW5_Events } from "../hw5_enums";
@@ -63,6 +64,9 @@ export default class GameLevel extends Scene {
     protected totalMines: number;
 
     // Total switches and amount currently pressed
+    protected totalFallingSpikes: number;
+    protected fallingSpikeXPositions: Array<number>; //this holds the x positions of the falling spikes on the map from left to right
+    protected triggerXPositions: Array<number>; //this is hardcoded for each land level and holds teh x positions of the triggers on the map with the order corresponding to the falling spikes they each control
     protected totalSwitches: number;
     protected switchLabel: Label;
     protected switchesPressed: number;
@@ -86,6 +90,8 @@ export default class GameLevel extends Scene {
     startScene(): void {
         this.totalMines = 0;
         this.switchesPressed = 0;
+        this.totalFallingSpikes = 0;
+        this.fallingSpikeXPositions = [];
         GameLevel.health = 3;
         this.paused = false;
 
@@ -198,24 +204,21 @@ export default class GameLevel extends Scene {
                         }
                         break;
 
-                    case HW5_Events.UPDATE_GRAVITY:
+                    case HW5_Events.PLAYER_HIT_SWITCH:
                         {
-                            //console.log("UPDATE_GRAVITY EVENT FIRED");
-                            //console.log("LEVEL1: " + this.waterLevel);
-                            //this.waterLevel = true;
-                            //console.log("LEVEL2: " + this.waterLevel);
-                            if(this.waterLevel == true) //WATER LEVEL
-                            {
-                                //console.log(event.data);
-                                //event.data.set("gravity", 7000);
-                                //event.data.set("inWater", false)
-                                //console.log(event.data);
+                            //obtain the x position of the switch that was hit as event data
+                            let triggerXLocation = event.data.get("TriggerXLocation");
+                            console.log("BEBEEBEBE " + triggerXLocation);
+                            let correspondingIndex = -1;
+                            for(let t = 0; t < this.triggerXPositions.length; t++){
+                                if(this.triggerXPositions[t] == triggerXLocation){
+                                    correspondingIndex = t;
+                                }
                             }
-                            else //LAND LEVEL
-                            {
-                                //event.data.set("inWater", false)
-                                this.player.inWater = false;
-                            }
+                            console.log("CORRESPONDNG INDEX " + correspondingIndex);
+                            let fallingSpikeID = this.fallingSpikeXPositions[correspondingIndex];
+                            console.log("SPIKE TO FALL HAS ID OF: " + fallingSpikeID);
+                            this.emitter.fireEvent(HW5_Events.SPIKES_FALL, {SpikeID: fallingSpikeID});
                         }
                         break;
 
@@ -506,6 +509,22 @@ export default class GameLevel extends Scene {
         mine.addAI(MineController, {});
         mine.setGroup("mine");
         mine.setTrigger("player", HW5_Events.PLAYER_HIT_MINE, null);
+    }
+
+    /**
+     * Adds a spike into the game
+     * @param spriteKey The key of the spike sprite
+     * @param tilePos The tilemap position to add the spike to
+     * @param aiOptions The options for the spike AI
+     */
+     protected addSpike(spriteKey: string, tilePos: Vec2, aiOptions: Record<string, any>): void {
+        let spike = this.add.animatedSprite(spriteKey, "primary");
+        spike.position.set(tilePos.x*128, tilePos.y*128);
+        spike.scale.set(1, 1);
+        spike.addPhysics();
+        spike.addAI(FallingSpikeController, {SpikeID: aiOptions.SpikeID});
+        //spike.setGroup("spike"); //add another collision group for spikes
+        //spike.setTrigger("player", HW5_Events.PLAYER_HIT_SPIKES, null);
     }
 
     protected handleSharkPlayerCollision(player: AnimatedSprite, shark: AnimatedSprite)

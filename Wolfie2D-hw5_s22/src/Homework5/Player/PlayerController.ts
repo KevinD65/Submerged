@@ -167,6 +167,11 @@ export default class PlayerController extends StateMachineAI {
                 this.damageCooldown -= 1;
             }
         }
+        else if(tileBelow == 28){ //FALLING SPIKE TRIGGER
+            //MIGHT NEED COOLDOWN TIMER
+            console.log("TRIGGER HIT WITH ID OF: " + (this.tilemap.getColRowAt(this.owner.position)).x);
+            this.emitter.fireEvent(HW5_Events.PLAYER_HIT_SWITCH, {TriggerXLocation: (this.tilemap.getColRowAt(this.owner.position)).x});
+        }
 
 		if(this.currentState instanceof Jump){
 			Debug.log("playerstate", "Player State: Jump");

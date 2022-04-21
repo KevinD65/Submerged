@@ -33,6 +33,7 @@ export default class BossLevel extends GameLevel {
         // Set the total switches and balloons in the level
         this.totalMines = 1;
         this.totalSwitches = 4;
+        this.totalFallingSpikes = 2;
 
         // Set this to a water level
         this.waterLevel = false;
@@ -46,9 +47,14 @@ export default class BossLevel extends GameLevel {
 
         //COMMENT THIS FOR NOW! WILL REPURPOSE BALLOONS FOR MINES AND HEALTH KITS!!!!!!
         // Add balloons of various types, just red and blue for the first level
-        /*for(let pos of [new Vec2(10, 5)]){
-            this.addMine("mine", pos, {});
-        }*/
+
+        this.triggerXPositions = [22];
+
+        //IMPORTANT: WHEN ASSIGNING SPIKE IDS, ASSIGN BASED ON INCREASING X POSITION OF THE SPIKES ON THE MAP
+        for(let pos of [new Vec2(16, 5)]){
+            this.addSpike("mine", pos, {SpikeID: pos.x});
+            this.fallingSpikeXPositions.push(pos.x);
+        }
 
         this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
     }
