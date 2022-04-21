@@ -18,6 +18,7 @@ export default class Level1 extends GameLevel {
         this.load.audio("switch", "hw5_assets/sounds/switch.wav");
         this.load.audio("player_death", "hw5_assets/sounds/player_death.wav");
         this.load.audio("level_music", "hw5_assets/music/gameplay.mp3");
+        this.load.audio("damage","hw5_assets/sounds/dmg.wav");
     }
 
     unloadScene(){

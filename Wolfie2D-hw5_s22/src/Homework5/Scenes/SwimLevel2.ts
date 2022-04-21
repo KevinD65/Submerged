@@ -24,11 +24,12 @@ export default class Level2 extends GameLevel {
         this.load.audio("jump", "hw5_assets/sounds/jump.wav");
         this.load.audio("switch", "hw5_assets/sounds/switch.wav");
         this.load.audio("player_death", "hw5_assets/sounds/player_death.wav");
-        this.load.audio("level_music", "hw5_assets/music/menu.mp3");
+        this.load.audio("level_music", "hw5_assets/music/gameplay.mp3");
+        this.load.audio("damage","hw5_assets/sounds/dmg.wav");
     }
 
     unloadScene(){
-
+        this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
     }
 
     startScene(): void {
@@ -52,6 +53,7 @@ export default class Level2 extends GameLevel {
         for(let pos of [new Vec2(13,9), new Vec2(20, 7), new Vec2(42, 7), new Vec2(58,6)]){
             this.addMine("mine", pos, {});
         }
+        this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
         //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
     }
 
