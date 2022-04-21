@@ -127,7 +127,7 @@ export default class PlayerController extends StateMachineAI {
 
         //CHECK IF THE PLAYER IS IN CONTACT WITH A SPIKED TILE
         //console.log(tileAbove);
-        //console.log(tileBelow);
+        console.log(tileBelow);
         if(tileAbove == 1 || tileAbove == 2 || tileAbove == 3 || tileAbove == 6 || tileAbove == 7 || tileAbove == 15 || tileAbove == 17 || tileAbove == 18){
             if(this.damageCooldown == -1 || this.damageCooldown == 0){
                 this.damageCooldown = 30;
@@ -138,7 +138,7 @@ export default class PlayerController extends StateMachineAI {
             }
 
         } 
-        else if(tileBelow == 4 || tileBelow == 5 || tileBelow == 8 || tileBelow == 9 || tileBelow == 10 || tileBelow == 11 || tileBelow == 26 || tileBelow == 27){
+        else if(tileBelow == 4 || tileBelow == 5 || tileBelow == 8 || tileBelow == 9 || tileBelow == 10 || tileBelow == 11 /*|| tileBelow == 26*/ || tileBelow == 27){
             if(this.damageCooldown == -1 || this.damageCooldown == 0){
                 this.damageCooldown = 30;
                 this.emitter.fireEvent(HW5_Events.PLAYER_HIT_SPIKES);
@@ -148,7 +148,7 @@ export default class PlayerController extends StateMachineAI {
             }
         }
         else if(tileAhead == 1 || tileAhead == 2 || tileAhead == 3 || tileAhead == 4 || tileAhead == 6 || tileAhead == 7 || tileAhead == 8 || tileAhead == 9 || tileAhead == 10 
-            || tileAhead == 11 || tileAhead == 15 || tileAhead == 17 || tileAhead == 18 || tileAhead == 26 || tileAhead == 27){
+            || tileAhead == 11 || tileAhead == 15 || tileAhead == 17 || tileAhead == 18 /*|| tileAhead == 26*/ || tileAhead == 27){
             if(this.damageCooldown == -1 || this.damageCooldown == 0){
                 this.damageCooldown = 30;
                 this.emitter.fireEvent(HW5_Events.PLAYER_HIT_SPIKES);

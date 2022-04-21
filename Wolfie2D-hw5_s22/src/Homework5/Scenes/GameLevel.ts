@@ -447,7 +447,13 @@ export default class GameLevel extends Scene {
         }
         this.player.position.copy(this.playerSpawn);
         this.player.addPhysics(new AABB(Vec2.ZERO, new Vec2(14, 14)));
-        this.player.inWater = true;
+
+        //THIS DETERMINES WHETHER THE PLAYER IS IN WATER OR NOT (BASED ON THE ATTRIBUTE OF THE LEVEL) SO THAT PHYSICS CAN BE ADJUSTED PROPERLY
+        if(this.waterLevel)
+            this.player.inWater = true;
+        else
+            this.player.inWater = false;
+
         this.player.colliderOffset.set(0, 2);
         this.player.addAI(PlayerController, {playerType: "platformer", tilemap: "Background", color: HW5_Color.RED});
 

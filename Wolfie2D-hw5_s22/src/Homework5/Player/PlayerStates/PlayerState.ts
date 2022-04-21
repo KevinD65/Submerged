@@ -18,7 +18,7 @@ export default abstract class PlayerState extends State {
 	constructor(parent: StateMachine, owner: GameNode){
 		super(parent);
 		this.owner = owner;
-		this.gravity = this.owner.inWater ? 800 : 2000; //PLAY WITH GRAVITY NUMBERS
+		this.gravity = this.owner.inWater ? 800 : 1500; //PLAY WITH GRAVITY NUMBERS
 		this.positionTimer = new Timer(250);
 		this.positionTimer.start();
 	}
@@ -44,6 +44,7 @@ export default abstract class PlayerState extends State {
 		
 	}
 
+	/*
 	updateGravity() {
 		//console.log("UPDATE GRAVITY")
 		if(this.owner.inWater == true) //WATER
@@ -56,7 +57,7 @@ export default abstract class PlayerState extends State {
 		}
 		//this.gravity = this.owner.inWater ? 800 : 2000;
 		//console.log("this.owner.inWater: " + this.owner.inWater);
-	}
+	}*/
 
 	update(deltaT: number): void {
 		// Do gravity
@@ -67,15 +68,17 @@ export default abstract class PlayerState extends State {
 		//console.log("this.owner.inWater: " + this.owner.inWater)
 		//this.emitter.fireEvent(HW5_Events.UPDATE_GRAVITY, {inWater: this.owner.inWater});
 		//console.log(this.owner.inWater)
-		this.emitter.fireEvent(HW5_Events.UPDATE_GRAVITY, {gravity: this.gravity});
-		this.updateGravity();
+		//this.emitter.fireEvent(HW5_Events.UPDATE_GRAVITY, {gravity: this.gravity});
+		//this.updateGravity();
 
 		//console.log("inWater: " + this.owner.inWater);
+
+		console.log(this.gravity);
 
 		if (this.positionTimer.isStopped()){
 			this.emitter.fireEvent(HW5_Events.PLAYER_MOVE, {position: this.owner.position.clone()});
 			this.positionTimer.start();
 		}
-		this.parent.velocity.y += this.gravity*deltaT;
+		this.parent.velocity.y += this.gravity*deltaT; //while in the air, the player's velocity gets changed every unit of timt due to gravity
 	}
 }

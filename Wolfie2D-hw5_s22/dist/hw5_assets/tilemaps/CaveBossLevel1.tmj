@@ -247,7 +247,7 @@
                         {
                          "name":"Collidable",
                          "type":"bool",
-                         "value":true
+                         "value":false
                         }]
                 }, 
                 {

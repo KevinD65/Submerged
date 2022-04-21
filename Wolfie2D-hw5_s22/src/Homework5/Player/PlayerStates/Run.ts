@@ -15,7 +15,7 @@ export default class Run extends OnGround {
 	updateSuit() {
 	}
 
-	update(deltaT: number): void {
+	update(deltaT: number): void {/*
 		super.update(deltaT);
 
 		let dir = this.getInputDirection();
@@ -30,7 +30,7 @@ export default class Run extends OnGround {
 
 		this.parent.velocity.x = dir.x * this.parent.speed
 
-		this.owner.move(this.parent.velocity.scaled(deltaT));
+		this.owner.move(this.parent.velocity.scaled(deltaT));*/
 	}
 
 	onExit(): Record<string, any> {

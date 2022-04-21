@@ -12,6 +12,7 @@ import Label from "../../Wolfie2D/Nodes/UIElements/Label";
 import Input from "../../Wolfie2D/Input/Input";
 import Level2 from "./SwimLevel2";
 import Level3 from "./SwimLevel3";
+import BossLevel from "./BossLevel";
 
 
 export default class MainMenu extends Scene {
@@ -280,6 +281,7 @@ export default class MainMenu extends Scene {
         level5.font = "PixelSimple";
         level5.textColor = Color.fromStringHex("BB0070");
 
+        //LEVEL 6 IS THE BOSS BATTLE
         const level6 = <Button>this.add.uiElement(UIElementType.BUTTON, "Levels", {position: new Vec2(size.x + 150, size.y + 150), text: "Level 6"});
         level6.backgroundColor = Color.fromStringHex("00BDF9");
         level6.borderColor = Color.fromStringHex("00BDF9");
@@ -347,6 +349,10 @@ export default class MainMenu extends Scene {
 
         level3.onClick = () => {
             this.sceneManager.changeToScene(Level3, {}, sceneOptions);
+        }
+
+        level6.onClick = () => {
+            this.sceneManager.changeToScene(BossLevel, {}, sceneOptions)
         }
 
         back4.onClick = () => {

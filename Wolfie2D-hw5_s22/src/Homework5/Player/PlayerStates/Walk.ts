@@ -10,45 +10,39 @@ export default class Walk extends OnGround {
 
 	onEnter(options: Record<string, any>): void {
 		this.parent.speed = this.parent.MIN_SPEED;
-		this.owner.animation.playIfNotAlready("swim_right",true);
+		if(this.owner.inWater)
+			this.owner.animation.playIfNotAlready("swim_right",true);
+		else
+			this.owner.animation.playIfNotAlready("jump_right", true);
 	}
 
 	updateSuit() {
-		//PLAY THE APPROPRIATE ANIMATIONS BASED ON VELOCITY
-		/*
-		if(this.parent.velocity.x > 0){
-			this.owner.animation.play("swim_right", true);
-		}*/
 	}
 
 	update(deltaT: number): void {
 		super.update(deltaT);
 		let dir = this.getInputDirection();
 
-		if(!this.owner.inWater){
-			if(dir.isZero()){
-				this.finished(PlayerStates.IDLE);
-			} else {
-				if(Input.isPressed("run")){
-					this.finished(PlayerStates.RUN);
-				}
-			}
-
-			this.parent.velocity.x = dir.x * this.parent.speed;
-
-			this.owner.move(this.parent.velocity.scaled(deltaT));
-		}
-		else{
+		if(!this.owner.inWater){ ///land level
+			console.log("LAND GRAVITY WHILE WALKING: " + this.parent.velocity.y);
 			this.parent.velocity.x = dir.x * 500;
-			//this.parent.velocity.y = this.parent.velocity;
 			this.owner.move(this.parent.velocity.scaled(deltaT));
-			if(Input.isJustPressed("jump")){
-				//console.log("TRANBADNWOJKNDW");
-				//this.parent.velocity.y = -1500;
+			if(Input.isJustPressed("jump") && this.owner.onGround){
 				this.finished("jump");
 			}
-			if(dir.isZero())
-			{
+			if(dir.isZero()){
+				console.log("DONE WALK NOW IDLE");
+				this.finished(PlayerStates.IDLE);
+			}
+		}
+		else{ //water level
+			console.log("WATER GRAVITY WHILE WALKING: " + this.parent.velocity.y);
+			this.parent.velocity.x = dir.x * 500;
+			this.owner.move(this.parent.velocity.scaled(deltaT));
+			if(Input.isJustPressed("jump")){
+				this.finished("jump");
+			}
+			if(dir.isZero()){
 				this.finished(PlayerStates.IDLE);
 			}
 		}

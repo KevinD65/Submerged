@@ -10,7 +10,7 @@ export default abstract class InAir extends PlayerState {
         if(!this.owner.inWater){ //IF WE ARE FALLING DOWNWARDS IN THE AIR, LET THE DIVER FOLLOW NORMAL LAND PHYSICS
             let dir = this.getInputDirection();
 
-            this.parent.velocity.x += dir.x * this.parent.speed/3.5 - 0.3*this.parent.velocity.x;
+            this.parent.velocity.x = dir.x * 500;
 
             this.owner.move(this.parent.velocity.scaled(deltaT));
 
@@ -19,8 +19,15 @@ export default abstract class InAir extends PlayerState {
             }
         }
         else{ //IF WE ARE FALLING DOWNWARDS IN THE WATER, LET THE DIVER GO INTO AN IDLE STATE
-            //console.log("IN THE AIR");
-            this.finished(PlayerStates.IDLE);
+            let dir = this.getInputDirection();
+
+            //this.parent.velocity.x += dir.x * this.parent.speed;
+
+            //this.owner.move(this.parent.velocity.scaled(deltaT));
+
+            if(this.owner.onGround){
+                this.finished(PlayerStates.PREVIOUS);
+            }
         }
     }
 }

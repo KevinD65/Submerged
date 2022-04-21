@@ -10,9 +10,9 @@ export default class Idle extends OnGround {
 	onEnter(options: Record<string, any>): void {
 		this.parent.speed = this.parent.MIN_SPEED;
 		if(this.owner.inWater)
-		{
 			this.owner.animation.play("swim_down");
-		}
+		else
+			this.owner.animation.play("idle", true);
 	}
 
 	
@@ -33,10 +33,20 @@ export default class Idle extends OnGround {
 					this.finished(PlayerStates.WALK);
 				}
 			}
-			
+			else{
+				//console.log("IDLE");
+				this.parent.velocity.x = dir.x * this.parent.speed;
+				this.parent.velocity.y = 500;
+				this.owner.move(this.parent.velocity.scaled(deltaT));
+			}
+			/*
+			if(Input.isJustPressed("jump") && this.owner.onGround){
+				this.finished("OnGround");
+			}*/
+			/*
 			this.parent.velocity.x = 0;
-
 			this.owner.move(this.parent.velocity.scaled(deltaT));
+			*/
 		}
 		else{ //IF WE ARE IN A WATER LEVEL...
 			if(!dir.isZero() && dir.y === 0){ //MOVING ACROSS THE WATER FLOOR

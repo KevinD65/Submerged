@@ -12,12 +12,12 @@ export default class Jump extends InAir {
 
 	onEnter(options: Record<string, any>): void {
 		this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "jump", loop: false, holdReference: false});
-		if(this.parent.velocity.x == 0)
-		{
-			this.owner.animation.play("swim_up", true);
-		}
-		else{
+		
+		if(this.parent.velocity.x != 0 && this.owner.inWater){
 			this.owner.animation.play("swim_right", true);
+		}
+		else if(this.parent.velocity.x != 0 && !this.owner.inWater){
+			this.owner.animation.play("jump_right", true);
 		}
 	}
 
@@ -34,9 +34,19 @@ export default class Jump extends InAir {
 
 		//console.log("WHERE?");
 		// If we're falling (in land level), go to the fall state
-		if(this.parent.velocity.y >= 0 && !this.owner.inWater){
-			//console.log("FALLING");
-			this.finished(PlayerStates.FALL);
+		if(!this.owner.inWater){
+			console.log("FALLING" + this.parent.velocity.y);
+			this.parent.velocity.y = -1000;
+			this.owner.move(this.parent.velocity.scaled(deltaT));
+			if(this.parent.velocity.x == 0)
+			{
+				console.log("DONE JUMP NOW FALL");
+				this.finished(PlayerStates.FALL);
+			}
+			else
+			{
+				this.finished(PlayerStates.WALK);
+			}
 		}
 		else{
 			//console.log("SWIMMING UP");
@@ -44,7 +54,7 @@ export default class Jump extends InAir {
 			this.owner.move(this.parent.velocity.scaled(deltaT));
 			if(this.parent.velocity.x == 0)
 			{
-				this.finished(PlayerStates.IDLE);
+				this.finished(PlayerStates.IDLE); //CHANGE THIS TO FALL AND FIX InAir TO FIX BUG WHERE A PLAYER CANT GO DIRECTLY UPWARDS
 			}
 			else
 			{

@@ -9,11 +9,6 @@ export default class OnGround extends PlayerState {
 	onEnter(options: Record<string, any>): void {}
 
 	update(deltaT: number): void {
-		if(!this.owner.inWater){
-			if(this.parent.velocity.y > 0){
-				this.parent.velocity.y = 0;
-			}
-		}
 		super.update(deltaT);
 
 		let direction = this.getInputDirection();
@@ -24,31 +19,24 @@ export default class OnGround extends PlayerState {
 
 		//console.log("ON GROUND");
 
-		// If we jump, move to the Jump state, give a burst of upwards velocity, and play our flip tween animation if 
+		// If we jump, move to the Jump state, give a burst of upwards velocity, and play our flip tween animation 
 		if(Input.isJustPressed("jump")){
-			this.finished("jump");
 			if(this.owner.inWater){ //IF IN WATER LEVEL, MOVE UPWARDS SLOWER
-				//this.parent.velocity.y = -100; //reduced upwards burst
+				this.finished("jump");
 				if(!this.owner.onGround){
 					this.finished(PlayerStates.IDLE);
 				}
 			}
 			else{ //IF IN LAND LEVEL, MOVE UPWARDS AND HAVE NORMAL ANIMATIONS
-				if(this.parent.velocity.x !== 0){
+				if(this.owner.onGround){
+					this.finished("jump");
 					this.owner.tweens.play("flip");
 				}
-				//this.parent.velocity.y = -1500;
+				/*
 				if(!this.owner.onGround){
 					this.finished("fall");
-				}
+				}*/
 			}
-			/*
-			if(this.parent.velocity.x !== 0){
-				this.owner.tweens.play("flip");
-			}*/
-		/*
-		} else if(!this.owner.onGround){
-			this.finished("fall");*/
 		}
 	}
 
