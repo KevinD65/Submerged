@@ -49,6 +49,7 @@ export default class GameLevel extends Scene {
     protected nextLevel: new (...args: any) => GameLevel;
     protected levelEndTimer: Timer;
     protected levelEndLabel: Label;
+    protected levelEndReached: boolean;
     
     // Screen fade in/out for level start and end
     protected levelTransitionTimer: Timer;
@@ -94,6 +95,7 @@ export default class GameLevel extends Scene {
         this.fallingSpikeXPositions = [];
         GameLevel.health = 3;
         this.paused = false;
+        this.levelEndReached = false;
 
         // Do the game level standard initializations
         this.initLayers();
@@ -191,11 +193,7 @@ export default class GameLevel extends Scene {
                         
                     case HW5_Events.PLAYER_ENTERED_LEVEL_END:
                         {
-                            //console.log("LEVEL END FIRED");
-                            //console.log("LEVEL1: " + this.waterLevel);
-                            //this.waterLevel = true;
-                            //console.log("LEVEL2: " + this.waterLevel);
-
+                            this.levelEndReached = true;
                             if(!this.levelEndTimer.hasRun() && this.levelEndTimer.isStopped()){
                                 // The player has reached the end of the level
                                 this.levelEndTimer.start();
@@ -257,14 +255,14 @@ export default class GameLevel extends Scene {
                                 this.player.animation.play("dead");
                                 GameLevel.deathTimerFlag = true;
                                 this.deathTimer.start();
-                            }
+                            }/*
                             else if(!GameLevel.deathTimerFlag && (this.levelEndTimer.isStopped() && !this.levelEndTimer.hasRun())){
                                 console.log("HOW MANY?");
                                 this.player.animation.play("dying");
                                 this.player.animation.play("dead");
                                 GameLevel.deathTimerFlag = true;
                                 this.deathTimer.start();
-                            }
+                            }*/
                         }
                 }
             }
@@ -272,6 +270,7 @@ export default class GameLevel extends Scene {
             this.handleSharkPlayerCollision(this.player,this.shark);
 
             if(this.deathTimer.isStopped() && GameLevel.deathTimerFlag == true){
+                this.player.animation.play("dead", true);
                 GameLevel.deathTimerFlag = false;
                 this.deathTimer.reset();
                 GameLevel.playerBeenKilled = false;
@@ -529,9 +528,12 @@ export default class GameLevel extends Scene {
 
     protected handleSharkPlayerCollision(player: AnimatedSprite, shark: AnimatedSprite)
     {
-        if(player.position.x<(shark.position.x+shark.size.x/4) && !this.waterLevel)
-        {
-            this.emitter.fireEvent(HW5_Events.PLAYER_KILLED, {});
+        if(!this.levelEndReached){
+            if(player.position.x<(shark.position.x+shark.size.x/4) && this.waterLevel)
+            {
+                Input.disableInput();
+                this.emitter.fireEvent(HW5_Events.PLAYER_KILLED, {});
+            }
         }
     }
 

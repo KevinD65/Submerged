@@ -13,6 +13,8 @@ import Input from "../../Wolfie2D/Input/Input";
 import Level2 from "./SwimLevel2";
 import Level3 from "./SwimLevel3";
 import BossLevel from "./BossLevel";
+import Level4 from "./SwimLevel4";
+import Level5 from "./SwimLevel5";
 
 
 export default class MainMenu extends Scene {
@@ -349,6 +351,14 @@ export default class MainMenu extends Scene {
 
         level3.onClick = () => {
             this.sceneManager.changeToScene(Level3, {}, sceneOptions);
+        }
+
+        level4.onClick = () => {
+            this.sceneManager.changeToScene(Level4, {}, sceneOptions);
+        }
+
+        level5.onClick = () => {
+            this.sceneManager.changeToScene(Level5, {}, sceneOptions);
         }
 
         level6.onClick = () => {

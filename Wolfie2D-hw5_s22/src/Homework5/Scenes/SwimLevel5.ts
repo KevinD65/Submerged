@@ -3,18 +3,12 @@ import Debug from "../../Wolfie2D/Debug/Debug";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
 import { HW5_Color } from "../hw5_color";
 import GameLevel from "./GameLevel";
-import Level4 from "./SwimLevel4";
+import BossLevel from "./BossLevel";
 
-export default class Level3 extends GameLevel {
-    // HOMEWORK 5 - TODO
-    /**
-     * Decide which resource to keep and which to cull.
-     *
-     * Not all of these loads are needed. Decide which to remove and handle keeping resources in Level1
-     */
+export default class Level5 extends GameLevel {
      loadScene(): void {
         // Load resources
-        this.load.tilemap("level3", "hw5_assets/tilemaps/SubmergedMap3.tmj");
+        this.load.tilemap("level5", "hw5_assets/tilemaps/SubmergedMap5.tmj");
         this.load.spritesheet("player", "hw5_assets/spritesheets/diver.json");
         this.load.spritesheet("shark", "hw5_assets/spritesheets/shark.json");
         //this.load.spritesheet("green", "hw5_assets/spritesheets/greenBalloon.json");
@@ -32,9 +26,9 @@ export default class Level3 extends GameLevel {
     }
 
     startScene(): void {
-        // Add the level 2 tilemap
-        this.add.tilemap("level3", new Vec2(0.5, 0.5));
-        this.viewport.setBounds(0, 0, 60*256, 12*256);
+        // Add the level 5 tilemap
+        this.add.tilemap("level5", new Vec2(0.5, 0.5));
+        this.viewport.setBounds(0, 0, 173*256, 19*256);
 
         this.playerSpawn = new Vec2(3*256, 3*256);
 
@@ -45,11 +39,11 @@ export default class Level3 extends GameLevel {
         // Do generic setup for a GameLevel
         super.startScene();
 
-        this.addLevelEnd(new Vec2(55, 5), new Vec2(2, 3));
+        this.addLevelEnd(new Vec2(157, 6), new Vec2(4, 7));
 
-        this.nextLevel = Level4;
+        //this.nextLevel = Level4;
 
-        for(let pos of [new Vec2(24,7), new Vec2(34, 4), new Vec2(38, 7), new Vec2(42,4), new Vec2(46,7), new Vec2(51,4)]){
+        for(let pos of [new Vec2(65, 10), new Vec2(66, 6), new Vec2(70, 12), new Vec2(70, 12), new Vec2(75, 9), new Vec2(78, 12), new Vec2(82, 7), new Vec2(87, 13), new Vec2(88, 5), new Vec2(90, 9)]){
             this.addMine("mine", pos, {});
         }
         //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "level_music", loop: true, holdReference: true});
