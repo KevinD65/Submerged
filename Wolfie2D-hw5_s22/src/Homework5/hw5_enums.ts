@@ -9,6 +9,8 @@ export enum HW5_Events {
     /*BALLOON_POPPED = "BalloonPopped"*/MINE_EXPLODED = "MineExploded",
     PLAYER_ENTERED_LEVEL_END = "PlayerEnteredLevelEnd",
     UPDATE_GRAVITY = "UpdateGravity",
+    SHARK_HIT_PLAYER = "SharkHitPlayer",
+    SPIKE_HIT_SHARK = "SpikeHitShark",
     LEVEL_START = "LevelStart",
     LEVEL_END = "LevelEnd",
     PLAYER_KILLED = "PlayerKilled",

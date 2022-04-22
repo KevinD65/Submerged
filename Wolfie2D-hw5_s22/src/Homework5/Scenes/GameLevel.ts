@@ -43,6 +43,7 @@ export default class GameLevel extends Scene {
     // Labels for the UI
     protected static health: number = 3;
     protected healthLabel: Label;
+    protected sharkLabel: Label;
 
     // Stuff to end the level and go to the next level
     protected levelEndArea: Rect;
@@ -87,6 +88,10 @@ export default class GameLevel extends Scene {
     protected titleP: Label;
     protected buttonP1: Button;
     protected buttonP2: Button;
+
+    //Shark land stats
+    protected sharkCooldown: number;
+    protected sharkHealth: number;
 
     startScene(): void {
         this.totalMines = 0;
@@ -219,6 +224,24 @@ export default class GameLevel extends Scene {
                             this.emitter.fireEvent(HW5_Events.SPIKES_FALL, {SpikeID: fallingSpikeID});
                         }
                         break;
+                    
+                    case HW5_Events.SHARK_HIT_PLAYER:
+                        {
+                            if(this.sharkCooldown == 0)
+                            {
+                                this.player.animation.play("damage");
+                                this.incPlayerHealth(-1);
+                                this.sharkCooldown = 250;
+                                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "damage", loop: false, holdReference: false});
+                            }
+                        }
+                        break;
+
+                    case HW5_Events.SPIKE_HIT_SHARK:
+                        {
+                            this.incSharkHealth(-1);
+                        }
+                        break;
 
                     case HW5_Events.LEVEL_START:
                         {
@@ -267,7 +290,9 @@ export default class GameLevel extends Scene {
                 }
             }
 
-            this.handleSharkPlayerCollision(this.player,this.shark);
+            this.checkSharkPlayerInteraction(this.player,this.shark);
+
+            console.log("cooldown "+this.sharkCooldown);
 
             if(this.deathTimer.isStopped() && GameLevel.deathTimerFlag == true){
                 this.player.animation.play("dead", true);
@@ -362,7 +387,9 @@ export default class GameLevel extends Scene {
             HW5_Events.UPDATE_GRAVITY,
             HW5_Events.LEVEL_START,
             HW5_Events.LEVEL_END,
-            HW5_Events.PLAYER_KILLED
+            HW5_Events.PLAYER_KILLED,
+            HW5_Events.SHARK_HIT_PLAYER,
+            HW5_Events.SPIKE_HIT_SHARK
         ]);
     }
 
@@ -372,9 +399,20 @@ export default class GameLevel extends Scene {
     protected addUI(){
         // In-game labels
 
-        this.healthLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(500, 30), text: "Health: " + GameLevel.health});
-        this.healthLabel.textColor = Color.BLACK;
+        this.healthLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(150, 50), text: "Health: " + GameLevel.health});
+        this.healthLabel.textColor = Color.fromStringHex("BB0070");
+        this.healthLabel.fontSize = 75;
         this.healthLabel.font = "PixelSimple";
+        this.healthLabel.backgroundColor = Color.fromStringHex("00BDF9");
+
+        if(!this.waterLevel)
+        {
+            this.sharkLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(1750, 50), text: "Boss Health: " + this.sharkHealth});
+            this.sharkLabel.textColor = Color.fromStringHex("00BDF9");
+            this.sharkLabel.fontSize = 75;
+            this.sharkLabel.font = "PixelSimple";
+            this.sharkLabel.backgroundColor = Color.fromStringHex("BB0070");
+        }
 
         // End of level label (start off screen)
         this.levelEndLabel = <Label>this.add.uiElement(UIElementType.LABEL, "UI", {position: new Vec2(-1000, 500), text: "Level Complete"});
@@ -478,8 +516,11 @@ export default class GameLevel extends Scene {
             this.shark = this.add.animatedSprite("player", "primary");
             this.shark.addPhysics(new AABB(Vec2.ZERO, new Vec2(14, 14)));
             this.shark.colliderOffset.set(0, 2);
-            let sharkSpawn = new Vec2(2*128, 4*128);
+            let sharkSpawn = new Vec2(13*128, 9*128);;
             this.shark.position.copy(sharkSpawn);
+            this.shark.setTrigger("player", HW5_Events.SHARK_HIT_PLAYER, null);
+            this.sharkCooldown = 0;
+            this.sharkHealth = 3;
         }
         this.shark.addAI(SharkController, {inWater: this.waterLevel, tilemap: "Background"});
     }
@@ -522,17 +563,30 @@ export default class GameLevel extends Scene {
         spike.scale.set(1, 1);
         spike.addPhysics();
         spike.addAI(FallingSpikeController, {SpikeID: aiOptions.SpikeID});
+        if(!this.waterLevel)
+        {
+            spike.setTrigger("shark", HW5_Events.SPIKE_HIT_SHARK, null);
+        }
         //spike.setGroup("spike"); //add another collision group for spikes
         //spike.setTrigger("player", HW5_Events.PLAYER_HIT_SPIKES, null);
     }
 
-    protected handleSharkPlayerCollision(player: AnimatedSprite, shark: AnimatedSprite)
+    protected checkSharkPlayerInteraction(player: AnimatedSprite, shark: AnimatedSprite)
     {
-        if(!this.levelEndReached){
-            if(player.position.x<(shark.position.x+shark.size.x/4) && this.waterLevel)
+        if(this.waterLevel){
+            if(!this.levelEndReached){
+                if(player.position.x<(shark.position.x+shark.size.x/4))
+                {
+                    Input.disableInput();
+                    this.emitter.fireEvent(HW5_Events.PLAYER_KILLED, {});
+                }
+            }
+        }
+        else
+        {
+            if(this.sharkCooldown > 0)
             {
-                Input.disableInput();
-                this.emitter.fireEvent(HW5_Events.PLAYER_KILLED, {});
+                this.sharkCooldown -= 1;
             }
         }
     }
@@ -572,6 +626,11 @@ export default class GameLevel extends Scene {
      */
     protected handlePlayerHealthKitCollision(player: AnimatedSprite, mine: AnimatedSprite){
 
+    }
+
+    protected incSharkHealth(amt: number): void {
+        this.sharkHealth += amt;
+        this.sharkLabel.text = "Boss Health: " + this.sharkHealth;
     }
 
     /**

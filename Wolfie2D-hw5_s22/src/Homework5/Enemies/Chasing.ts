@@ -13,10 +13,36 @@ export default class Chasing extends SharkState {
 
 	update(deltaT: number): void {
 		super.update(deltaT);
-        let dirX = Math.random();
-        if(dirX < 0.01)
+        if(this.playerPos != null)
         {
-            this.parent.velocity.x = -this.parent.velocity.x;
+            let playerX = this.playerPos.x;
+            let sharkX = this.owner.position.x;
+            let lookDistance = 6*128;
+            if(Math.abs(sharkX-playerX) < lookDistance)
+            {
+                if(playerX < sharkX)
+                {
+                    this.parent.velocity.x = -this.maxVel;
+                    console.log(this.parent.velocity.x);
+                }
+                else if(playerX > sharkX)
+                {
+                    this.parent.velocity.x = this.maxVel;
+                }
+                else
+                {
+                    this.parent.velocity.x = 0;
+                }
+            }
+            else
+            {
+                
+                let dirX = Math.random();
+                if(dirX < 0.01)
+                {
+                    this.parent.velocity.x = -this.parent.velocity.x;
+                }
+            }
         }
         this.parent.velocity.y += this.gravity*deltaT;
         this.owner.move(this.parent.velocity.scaled(deltaT));
