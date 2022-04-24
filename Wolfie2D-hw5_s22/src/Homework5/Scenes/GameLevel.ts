@@ -256,7 +256,7 @@ export default class GameLevel extends Scene {
                             if(this.nextLevel){
                                 let sceneOptions = {
                                     physics: {
-                                        groupNames: ["ground", "player", "mine"],
+                                        groupNames: ["ground", "player", "mine"/*, "shark", "stalactite"*/],
                                         collisions:
                                         [
                                             [0, 1, 1],
@@ -509,12 +509,14 @@ export default class GameLevel extends Scene {
         if(this.waterLevel)
         {
             this.shark = this.add.animatedSprite("shark", "primary");
+            //this.shark.setGroup("shark");
             let sharkSpawn = new Vec2(-6*128, 6*128);
             this.shark.position.copy(sharkSpawn);
         }
         else{
-            this.shark = this.add.animatedSprite("player", "primary");
+            this.shark = this.add.animatedSprite("shark", "primary");
             this.shark.addPhysics(new AABB(Vec2.ZERO, new Vec2(14, 14)));
+            this.shark.setGroup("player");
             this.shark.colliderOffset.set(0, 2);
             let sharkSpawn = new Vec2(13*128, 9*128);;
             this.shark.position.copy(sharkSpawn);
@@ -562,12 +564,12 @@ export default class GameLevel extends Scene {
         spike.position.set(tilePos.x*128, tilePos.y*128);
         spike.scale.set(1, 1);
         spike.addPhysics();
-        spike.addAI(FallingSpikeController, {SpikeID: aiOptions.SpikeID});
+        spike.addAI(FallingSpikeController, {SpikeID: aiOptions.SpikeID, tilemap: "Background"});
         if(!this.waterLevel)
         {
-            spike.setTrigger("shark", HW5_Events.SPIKE_HIT_SHARK, null);
+            spike.setTrigger("player", HW5_Events.SPIKE_HIT_SHARK, null);
         }
-        //spike.setGroup("spike"); //add another collision group for spikes
+        //spike.setGroup("mine"); //add another collision group for spikes
         //spike.setTrigger("player", HW5_Events.PLAYER_HIT_SPIKES, null);
     }
 

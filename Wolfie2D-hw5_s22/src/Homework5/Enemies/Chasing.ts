@@ -47,7 +47,7 @@ export default class Chasing extends SharkState {
         }
         this.parent.velocity.y += this.gravity*deltaT;
         this.owner.move(this.parent.velocity.scaled(deltaT));
-        (<Sprite>this.owner).invertX = this.parent.velocity.x>0;
+        (<Sprite>this.owner).invertX = this.parent.velocity.x<0;
 	}
 
 	onExit(): Record<string, any> {

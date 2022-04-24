@@ -9,10 +9,10 @@ export default class BossLevel extends GameLevel {
         // Load resources
         this.load.tilemap("bossLevel", "hw5_assets/tilemaps/CaveBossLevel1.tmj");
         this.load.spritesheet("player", "hw5_assets/spritesheets/diver.json");
-        this.load.spritesheet("shark", "hw5_assets/spritesheets/shark.json");
+        this.load.spritesheet("shark", "hw5_assets/spritesheets/landshark.json");
         //this.load.spritesheet("red", "hw5_assets/spritesheets/redBalloon.json");
         //this.load.spritesheet("blue", "hw5_assets/spritesheets/blueBalloon.json");
-        this.load.spritesheet("mine", "hw5_assets/spritesheets/mine.json")
+        this.load.spritesheet("stalactite", "hw5_assets/spritesheets/stalactites.json")
         this.load.audio("jump", "hw5_assets/sounds/jump.wav");
         this.load.audio("switch", "hw5_assets/sounds/switch.wav");
         this.load.audio("player_death", "hw5_assets/sounds/player_death.wav");
@@ -49,11 +49,11 @@ export default class BossLevel extends GameLevel {
         //COMMENT THIS FOR NOW! WILL REPURPOSE BALLOONS FOR MINES AND HEALTH KITS!!!!!!
         // Add balloons of various types, just red and blue for the first level
 
-        this.triggerXPositions = [22];
+        this.triggerXPositions = [5, 22];
 
         //IMPORTANT: WHEN ASSIGNING SPIKE IDS, ASSIGN BASED ON INCREASING X POSITION OF THE SPIKES ON THE MAP
-        for(let pos of [new Vec2(16, 5)]){
-            this.addSpike("mine", pos, {SpikeID: pos.x});
+        for(let pos of [new Vec2(7, 2), new Vec2(16, 2)]){
+            this.addSpike("stalactite", pos, {SpikeID: pos.x});
             this.fallingSpikeXPositions.push(pos.x);
         }
 

@@ -30,7 +30,7 @@ export default class OnGround extends PlayerState {
 			else{ //IF IN LAND LEVEL, MOVE UPWARDS AND HAVE NORMAL ANIMATIONS
 				if(this.owner.onGround){
 					this.finished("jump");
-					this.owner.tweens.play("flip");
+					//this.owner.tweens.play("flip");
 				}
 				/*
 				if(!this.owner.onGround){

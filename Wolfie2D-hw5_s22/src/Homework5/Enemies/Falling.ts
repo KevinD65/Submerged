@@ -6,12 +6,12 @@ export default class Falling extends FallingSpikeState {
 	onEnter(): void {
         console.log("FALLINGSPIKE");
 
-		//(<AnimatedSprite>this.owner).animation.play("IDLE", true);
+		(<AnimatedSprite>this.owner).animation.play("idle", true);
 	}
 
 	update(deltaT: number): void {
 		super.update(deltaT);
-        this.parent.velocity.y = 300;
+        this.parent.velocity.y = 1000;
         this.owner.move(this.parent.velocity.scaled(deltaT));
 	}
 

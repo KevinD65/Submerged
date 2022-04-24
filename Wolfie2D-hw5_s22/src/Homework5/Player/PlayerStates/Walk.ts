@@ -13,7 +13,7 @@ export default class Walk extends OnGround {
 		if(this.owner.inWater)
 			this.owner.animation.playIfNotAlready("swim_right",true);
 		else
-			this.owner.animation.playIfNotAlready("jump_right", true);
+			this.owner.animation.playIfNotAlready("walk_right", true);
 	}
 
 	updateSuit() {

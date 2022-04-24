@@ -1,8 +1,8 @@
 {
 	"name": "landshark",
 	"spriteSheetImage": "landshark.png",
-	"spriteWidth": 1536,
-	"spriteHeight": 1536,
+	"spriteWidth": 256,
+	"spriteHeight": 256,
 	"leftBuffer": 0,
 	"rightBuffer": 0,
 	"topBuffer": 0,
@@ -11,7 +11,7 @@
 	"rows": 1,
 	"animations": [
 		{
-			"name": "chomping",
+			"name": "pursuing",
 			"repeat": true,
 			"frames": [
 				{
@@ -25,10 +25,6 @@
 				{
 					"index": 2,
 					"duration": 50
-				},
-				{
-					"index": 0,
-					"duration": 30
 				}
 			]
 		}
