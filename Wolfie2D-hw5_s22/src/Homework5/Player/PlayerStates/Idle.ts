@@ -57,14 +57,17 @@ export default class Idle extends OnGround {
 				}
 			}
 			else if(Input.isJustPressed("jump")){
-				//console.log("TRANBADNWOJKNDW");
-				//this.parent.velocity.y = -1500;
+				console.log("TRANBADNWOJKNDW");
+				this.parent.velocity.y = -1500;
 				this.finished("jump");
 			}
 			else{
 				//console.log("IDLE");
 				this.parent.velocity.x = dir.x * this.parent.speed;
-				this.parent.velocity.y = 250;
+				if(this.parent.velocity.y > 250)
+				{
+					this.parent.velocity.y = 250;
+				}
 				this.owner.move(this.parent.velocity.scaled(deltaT));
 			}
 			
