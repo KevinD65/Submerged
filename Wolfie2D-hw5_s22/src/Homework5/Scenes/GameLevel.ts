@@ -150,7 +150,6 @@ export default class GameLevel extends Scene {
                         {
                             // If the player hit spikes, decrement the health and display the updated health
                             if(!GameLevel.playerBeenKilled){
-                                this.player.animation.play("damage");
                                 this.incPlayerHealth(-1);
                                 this.healthLabel.text = "Health: " + GameLevel.health;
                                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "damage", loop: false, holdReference: false}); //CHANGE THIS TO A SPIKE SOUND
@@ -160,7 +159,6 @@ export default class GameLevel extends Scene {
 
                     case HW5_Events.PLAYER_HIT_MINE:
                         {
-                            this.player.animation.play("damage");
                             let node = this.sceneGraph.getNode(event.data.get("node"));
                             let other = this.sceneGraph.getNode(event.data.get("other"));
 

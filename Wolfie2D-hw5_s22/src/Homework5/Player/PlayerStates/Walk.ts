@@ -4,6 +4,7 @@ import { HW5_Color } from "../../hw5_color";
 import { HW5_Events } from "../../hw5_enums";
 import { PlayerStates } from "../PlayerController";
 import OnGround from "./OnGround";
+import { GameEventType } from "../../../Wolfie2D/Events/GameEventType";
 
 export default class Walk extends OnGround {
 	owner: AnimatedSprite;
@@ -11,9 +12,9 @@ export default class Walk extends OnGround {
 	onEnter(options: Record<string, any>): void {
 		this.parent.speed = this.parent.MIN_SPEED;
 		if(this.owner.inWater)
-			this.owner.animation.playIfNotAlready("swim_right",true);
+			this.owner.animation.play("swim_right",true);
 		else
-			this.owner.animation.playIfNotAlready("walk_right", true);
+			this.owner.animation.play("walk_right", true);
 	}
 
 	updateSuit() {
@@ -38,11 +39,14 @@ export default class Walk extends OnGround {
 		else{ //water level
 			console.log("WATER GRAVITY WHILE WALKING: " + this.parent.velocity.y);
 			this.parent.velocity.x = dir.x * 500;
-			this.owner.move(this.parent.velocity.scaled(deltaT));
+			let isJumping = false;
 			if(Input.isJustPressed("jump")){
-				this.finished("jump");
+				this.parent.velocity.y = -600;
+				isJumping = true;
+				this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "jump", loop: false, holdReference: false});
 			}
-			if(dir.isZero()){
+			this.owner.move(this.parent.velocity.scaled(deltaT));
+			if(dir.isZero() && !isJumping){
 				this.finished(PlayerStates.IDLE);
 			}
 		}

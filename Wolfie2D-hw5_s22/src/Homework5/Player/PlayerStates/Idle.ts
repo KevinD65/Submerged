@@ -10,7 +10,7 @@ export default class Idle extends OnGround {
 	onEnter(options: Record<string, any>): void {
 		this.parent.speed = this.parent.MIN_SPEED;
 		if(this.owner.inWater)
-			this.owner.animation.play("swim_down");
+			this.owner.animation.play("swim_down",true);
 		else
 			this.owner.animation.play("idle", true);
 	}
@@ -22,6 +22,19 @@ export default class Idle extends OnGround {
 
 	update(deltaT: number): void {
 		super.update(deltaT);
+
+		if(this.owner.inWater)
+		{
+			if(this.parent.velocity.y < 0)
+			{
+				this.owner.animation.playIfNotAlready("swim_up",true);
+			}
+			else
+			{
+				this.owner.animation.playIfNotAlready("swim_down",true);
+			}
+		}
+
 
 		let dir = this.getInputDirection();
 
@@ -57,14 +70,16 @@ export default class Idle extends OnGround {
 				}
 			}
 			else if(Input.isJustPressed("jump")){
-				//console.log("TRANBADNWOJKNDW");
-				//this.parent.velocity.y = -1500;
+				this.parent.velocity.y = -1500;
 				this.finished("jump");
 			}
 			else{
 				//console.log("IDLE");
 				this.parent.velocity.x = dir.x * this.parent.speed;
-				this.parent.velocity.y = 250;
+				if(this.parent.velocity.y > 250)
+				{
+					this.parent.velocity.y = 250;
+				}
 				this.owner.move(this.parent.velocity.scaled(deltaT));
 			}
 			

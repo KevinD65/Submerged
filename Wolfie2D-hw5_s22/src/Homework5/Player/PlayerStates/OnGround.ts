@@ -22,9 +22,9 @@ export default class OnGround extends PlayerState {
 		// If we jump, move to the Jump state, give a burst of upwards velocity, and play our flip tween animation 
 		if(Input.isJustPressed("jump")){
 			if(this.owner.inWater){ //IF IN WATER LEVEL, MOVE UPWARDS SLOWER
-				this.finished("jump");
+				//this.finished("jump");
 				if(!this.owner.onGround){
-					this.finished(PlayerStates.IDLE);
+					//this.finished(PlayerStates.IDLE);
 				}
 			}
 			else{ //IF IN LAND LEVEL, MOVE UPWARDS AND HAVE NORMAL ANIMATIONS
