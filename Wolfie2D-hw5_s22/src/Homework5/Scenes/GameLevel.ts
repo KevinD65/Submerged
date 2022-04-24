@@ -580,7 +580,7 @@ export default class GameLevel extends Scene {
                 if(player.position.x<(shark.position.x+shark.size.x/4))
                 {
                     Input.disableInput();
-                    this.respawnPlayer();
+                    this.emitter.fireEvent(HW5_Events.PLAYER_KILLED, {});
                 }
             }
         }
