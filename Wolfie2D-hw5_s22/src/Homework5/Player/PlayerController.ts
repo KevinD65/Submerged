@@ -36,6 +36,7 @@ export default class PlayerController extends StateMachineAI {
     MAX_SPEED: number = 300;
     tilemap: OrthogonalTilemap;
     damageCooldown: number = -1;
+    triggerCooldown: number = 200;
 
     // HOMEWORK 5 - TODO
     /**
@@ -167,10 +168,16 @@ export default class PlayerController extends StateMachineAI {
                 this.damageCooldown -= 1;
             }
         }
-        else if(tileBelow == 28){ //FALLING SPIKE TRIGGER
+        else if(tileBelow == 28 && this.triggerCooldown == 0){ //FALLING SPIKE TRIGGER
             //MIGHT NEED COOLDOWN TIMER
             console.log("TRIGGER HIT WITH ID OF: " + (this.tilemap.getColRowAt(this.owner.position)).x);
             this.emitter.fireEvent(HW5_Events.PLAYER_HIT_SWITCH, {TriggerXLocation: (this.tilemap.getColRowAt(this.owner.position)).x});
+            this.triggerCooldown = 200;
+        }
+
+        if(this.triggerCooldown > 0)
+        {
+            this.triggerCooldown--;
         }
 
 		if(this.currentState instanceof Jump){

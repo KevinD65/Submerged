@@ -93,7 +93,10 @@ export default class GameLevel extends Scene {
     protected sharkCooldown: number;
     protected sharkHealth: number;
 
+    protected spikeTriggered: boolean;
+
     startScene(): void {
+        this.spikeTriggered = false;
         this.totalMines = 0;
         this.switchesPressed = 0;
         this.totalFallingSpikes = 0;
@@ -220,6 +223,7 @@ export default class GameLevel extends Scene {
                             let fallingSpikeID = this.fallingSpikeXPositions[correspondingIndex];
                             console.log("SPIKE TO FALL HAS ID OF: " + fallingSpikeID);
                             this.emitter.fireEvent(HW5_Events.SPIKES_FALL, {SpikeID: fallingSpikeID});
+                            this.spikeTriggered = true;
                         }
                         break;
                     
@@ -237,7 +241,13 @@ export default class GameLevel extends Scene {
 
                     case HW5_Events.SPIKE_HIT_SHARK:
                         {
-                            this.incSharkHealth(-1);
+                            if(this.spikeTriggered)
+                            {
+                                this.incSharkHealth(-1);
+                                this.spikeTriggered = false;
+                            }
+                            
+                            
                         }
                         break;
 
