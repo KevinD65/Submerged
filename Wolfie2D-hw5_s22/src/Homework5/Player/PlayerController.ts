@@ -115,8 +115,8 @@ export default class PlayerController extends StateMachineAI {
 		super.update(deltaT);
         let checkForSpikes = this.owner.position; //get player world position
         //console.log(checkForSpikes);
-        let checkSpikesAbove = this.tilemap.getColRowAt(new Vec2(checkForSpikes.x, checkForSpikes.y - 25));
-        let checkSpikesBelow = this.tilemap.getColRowAt(new Vec2(checkForSpikes.x, checkForSpikes.y + 25));
+        let checkSpikesAbove = this.tilemap.getColRowAt(new Vec2(checkForSpikes.x, checkForSpikes.y - 64));
+        let checkSpikesBelow = this.tilemap.getColRowAt(new Vec2(checkForSpikes.x, checkForSpikes.y + 64));
         let checkSpikesInFront = this.tilemap.getColRowAt(new Vec2(checkForSpikes.x + 1, checkForSpikes.y));
         let checkSpikesBehind = this.tilemap.getColRowAt(new Vec2(checkForSpikes.x - 1, checkForSpikes.y));
         

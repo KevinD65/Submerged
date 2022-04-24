@@ -484,7 +484,7 @@ export default class GameLevel extends Scene {
             this.playerSpawn = Vec2.ZERO;
         }
         this.player.position.copy(this.playerSpawn);
-        this.player.addPhysics(new AABB(Vec2.ZERO, new Vec2(14, 14)));
+        this.player.addPhysics(new AABB(Vec2.ZERO, new Vec2(14, 48)));
 
         //THIS DETERMINES WHETHER THE PLAYER IS IN WATER OR NOT (BASED ON THE ATTRIBUTE OF THE LEVEL) SO THAT PHYSICS CAN BE ADJUSTED PROPERLY
         if(this.waterLevel)
@@ -492,7 +492,7 @@ export default class GameLevel extends Scene {
         else
             this.player.inWater = false;
 
-        this.player.colliderOffset.set(0, 2);
+        this.player.colliderOffset.set(0, 0);
         this.player.addAI(PlayerController, {playerType: "platformer", tilemap: "Background", color: HW5_Color.RED});
 
         this.player.setGroup("player");
@@ -513,9 +513,9 @@ export default class GameLevel extends Scene {
         }
         else{
             this.shark = this.add.animatedSprite("shark", "primary");
-            this.shark.addPhysics(new AABB(Vec2.ZERO, new Vec2(14, 14)));
+            this.shark.addPhysics(new AABB(Vec2.ZERO, new Vec2(120, 120)));
             this.shark.setGroup("player");
-            this.shark.colliderOffset.set(0, 2);
+            this.shark.colliderOffset.set(0, 0);
             let sharkSpawn = new Vec2(13*128, 9*128);;
             this.shark.position.copy(sharkSpawn);
             this.shark.setTrigger("player", HW5_Events.SHARK_HIT_PLAYER, null);
