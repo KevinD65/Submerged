@@ -1,6 +1,7 @@
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import AnimatedSprite from "../../Wolfie2D/Nodes/Sprites/AnimatedSprite";
 import SharkState from "./SharkState";
+import Sprite from "../../Wolfie2D/Nodes/Sprites/Sprite";
 
 export default class Chasing extends SharkState {
 	
@@ -46,6 +47,7 @@ export default class Chasing extends SharkState {
         }
         this.parent.velocity.y += this.gravity*deltaT;
         this.owner.move(this.parent.velocity.scaled(deltaT));
+        (<Sprite>this.owner).invertX = this.parent.velocity.x>0;
 	}
 
 	onExit(): Record<string, any> {
