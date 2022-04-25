@@ -54,7 +54,7 @@ export default class Jump extends InAir {
 			this.owner.move(this.parent.velocity.scaled(deltaT));
 			if(this.parent.velocity.x == 0)
 			{
-				this.finished(PlayerStates.IDLE); //CHANGE THIS TO FALL AND FIX InAir TO FIX BUG WHERE A PLAYER CANT GO DIRECTLY UPWARDS
+				this.finished(PlayerStates.FALL); //CHANGE THIS TO FALL AND FIX InAir TO FIX BUG WHERE A PLAYER CANT GO DIRECTLY UPWARDS
 			}
 			else
 			{
