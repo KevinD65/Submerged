@@ -102,7 +102,10 @@ export default class GameLevel extends Scene {
     protected sharkCooldown: number;
     protected sharkHealth: number;
 
+    protected spikeTriggered: boolean;
+
     startScene(): void {
+        this.spikeTriggered = false;
         this.totalMines = 0;
         this.switchesPressed = 0;
         this.totalFallingSpikes = 0;
@@ -160,7 +163,6 @@ export default class GameLevel extends Scene {
                         {
                             // If the player hit spikes, decrement the health and display the updated health
                             if(!GameLevel.playerBeenKilled){
-                                this.player.animation.play("damage");
                                 this.incPlayerHealth(-1);
                                 this.healthLabel.text = "Health: " + GameLevel.health;
                                 this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "damage", loop: false, holdReference: false}); //CHANGE THIS TO A SPIKE SOUND
@@ -170,7 +172,6 @@ export default class GameLevel extends Scene {
 
                     case HW5_Events.PLAYER_HIT_MINE:
                         {
-                            this.player.animation.play("damage");
                             let node = this.sceneGraph.getNode(event.data.get("node"));
                             let other = this.sceneGraph.getNode(event.data.get("other"));
 
@@ -232,6 +233,7 @@ export default class GameLevel extends Scene {
                             let fallingSpikeID = this.fallingSpikeXPositions[correspondingIndex];
                             console.log("SPIKE TO FALL HAS ID OF: " + fallingSpikeID);
                             this.emitter.fireEvent(HW5_Events.SPIKES_FALL, {SpikeID: fallingSpikeID});
+                            this.spikeTriggered = true;
                         }
                         break;
                     
@@ -249,7 +251,13 @@ export default class GameLevel extends Scene {
 
                     case HW5_Events.SPIKE_HIT_SHARK:
                         {
-                            this.incSharkHealth(-1);
+                            if(this.spikeTriggered)
+                            {
+                                this.incSharkHealth(-1);
+                                this.spikeTriggered = false;
+                            }
+                            
+                            
                         }
                         break;
 
@@ -503,7 +511,7 @@ export default class GameLevel extends Scene {
             this.playerSpawn = Vec2.ZERO;
         }
         this.player.position.copy(this.playerSpawn);
-        this.player.addPhysics(new AABB(Vec2.ZERO, new Vec2(14, 14)));
+        this.player.addPhysics(new AABB(Vec2.ZERO, new Vec2(14, 48)));
 
         //THIS DETERMINES WHETHER THE PLAYER IS IN WATER OR NOT (BASED ON THE ATTRIBUTE OF THE LEVEL) SO THAT PHYSICS CAN BE ADJUSTED PROPERLY
         if(this.waterLevel)
@@ -511,7 +519,7 @@ export default class GameLevel extends Scene {
         else
             this.player.inWater = false;
 
-        this.player.colliderOffset.set(0, 2);
+        this.player.colliderOffset.set(0, 0);
         this.player.addAI(PlayerController, {playerType: "platformer", tilemap: "Background", color: HW5_Color.RED});
 
         this.player.setGroup("player");
@@ -532,9 +540,9 @@ export default class GameLevel extends Scene {
         }
         else{
             this.shark = this.add.animatedSprite("shark", "primary");
-            this.shark.addPhysics(new AABB(Vec2.ZERO, new Vec2(14, 14)));
+            this.shark.addPhysics(new AABB(Vec2.ZERO, new Vec2(120, 120)));
             this.shark.setGroup("player");
-            this.shark.colliderOffset.set(0, 2);
+            this.shark.colliderOffset.set(0, 0);
             let sharkSpawn = new Vec2(13*128, 9*128);;
             this.shark.position.copy(sharkSpawn);
             this.shark.setTrigger("player", HW5_Events.SHARK_HIT_PLAYER, null);

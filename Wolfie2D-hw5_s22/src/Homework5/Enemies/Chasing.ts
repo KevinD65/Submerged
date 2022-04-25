@@ -10,6 +10,7 @@ export default class Chasing extends SharkState {
         this.gravity = 1000;
         this.parent.velocity.x = 250;
         this.owner.enablePhysics();
+        (<AnimatedSprite>this.owner).animation.play("pursuing", true);
 	}
 
 	update(deltaT: number): void {
