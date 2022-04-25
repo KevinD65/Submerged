@@ -1,13 +1,8 @@
 import Vec2 from "../../Wolfie2D/DataTypes/Vec2";
 import Debug from "../../Wolfie2D/Debug/Debug";
 import { GameEventType } from "../../Wolfie2D/Events/GameEventType";
-import Input from "../../Wolfie2D/Input/Input";
 import { HW5_Color } from "../hw5_color";
 import GameLevel from "./GameLevel";
-import Level1 from "./SwimLevel1";
-import Level2 from "./SwimLevel2";
-import Level3 from "./SwimLevel3";
-import Level4 from "./SwimLevel4";
 import BossLevel from "./BossLevel";
 
 export default class Level5 extends GameLevel {
@@ -47,7 +42,7 @@ export default class Level5 extends GameLevel {
 
         this.addLevelEnd(new Vec2(157, 6), new Vec2(4, 7));
 
-        this.nextLevel = BossLevel;
+        //this.nextLevel = Level4;
 
         for(let pos of [new Vec2(65, 10), new Vec2(66, 6), new Vec2(70, 12), new Vec2(70, 12), new Vec2(75, 9), new Vec2(78, 12), new Vec2(82, 7), new Vec2(87, 13), new Vec2(88, 5), new Vec2(90, 9)]){
             this.addMine("mine", pos, {});
@@ -57,23 +52,5 @@ export default class Level5 extends GameLevel {
 
     updateScene(deltaT: number): void {
         super.updateScene(deltaT);
-        if(Input.isKeyPressed("1")){
-            this.sceneManager.changeToScene(Level1, {}, this.sceneOptions);
-        }
-        if(Input.isKeyPressed("2")){
-            this.sceneManager.changeToScene(Level2, {}, this.sceneOptions);
-        }
-        if(Input.isKeyPressed("3")){
-            this.sceneManager.changeToScene(Level3, {}, this.sceneOptions);
-        }
-        if(Input.isKeyPressed("4")){
-            this.sceneManager.changeToScene(Level4, {}, this.sceneOptions);
-        }
-        if(Input.isKeyPressed("5")){
-            this.sceneManager.changeToScene(Level5, {}, this.sceneOptions);
-        }
-        if(Input.isKeyPressed("6")){
-            this.sceneManager.changeToScene(BossLevel, {}, this.sceneOptions);
-        }
     }
 }
