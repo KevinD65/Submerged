@@ -24,6 +24,12 @@ import { HW5_Events } from "../hw5_enums";
 import HW5_ParticleSystem from "../HW5_ParticleSystem";
 import PlayerController from "../Player/PlayerController";
 import MainMenu from "./MainMenu";
+import Level1 from "./SwimLevel1";
+import Level2 from "./SwimLevel2";
+import Level3 from "./SwimLevel3";
+import Level4 from "./SwimLevel4";
+import Level5 from "./SwimLevel5";
+//import BossLevel from "./BossLevel";
 
 // HOMEWORK 5 - TODO
 /**
@@ -73,6 +79,9 @@ export default class GameLevel extends Scene {
     protected switchLabel: Label;
     protected switchesPressed: number;
 
+    // Boolean determining whether the player is invincible or not
+    protected toggleInvincibility: boolean;
+
     // Boolean determining whether or not this is a water level
     protected waterLevel: boolean;
 
@@ -101,6 +110,7 @@ export default class GameLevel extends Scene {
         GameLevel.health = 3;
         this.paused = false;
         this.levelEndReached = false;
+        this.toggleInvincibility = false;
 
         // Do the game level standard initializations
         this.initLayers();
@@ -306,6 +316,13 @@ export default class GameLevel extends Scene {
             {
                 this.pauseGame();
                 this.paused = true;
+            }
+            if(Input.isKeyPressed("i")){
+                if(this.toggleInvincibility)
+                    this.toggleInvincibility = false;
+                else
+                    this.toggleInvincibility = true;
+                console.log("INVINCIBILITY: " + this.toggleInvincibility);
             }
         }
         else
@@ -640,14 +657,16 @@ export default class GameLevel extends Scene {
      * @param amt The amount to add to the player life
      */
     protected incPlayerHealth(amt: number): void {
-        GameLevel.health += amt;
-        this.healthLabel.text = "Health: " + GameLevel.health;
-        if (GameLevel.health <= 0 && !GameLevel.playerBeenKilled){
-            Input.disableInput();
-            GameLevel.playerBeenKilled = true;
-            this.player.disablePhysics();
-            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "player_death", loop: false, holdReference: false});
-            this.emitter.fireEvent(HW5_Events.PLAYER_KILLED);
+        if(!this.toggleInvincibility){
+            GameLevel.health += amt;
+            this.healthLabel.text = "Health: " + GameLevel.health;
+            if (GameLevel.health <= 0 && !GameLevel.playerBeenKilled){
+                Input.disableInput();
+                GameLevel.playerBeenKilled = true;
+                this.player.disablePhysics();
+                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "player_death", loop: false, holdReference: false});
+                this.emitter.fireEvent(HW5_Events.PLAYER_KILLED);
+            }
         }
     }
 

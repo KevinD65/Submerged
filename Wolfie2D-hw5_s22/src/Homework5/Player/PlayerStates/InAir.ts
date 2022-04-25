@@ -21,13 +21,10 @@ export default abstract class InAir extends PlayerState {
         else{ //IF WE ARE FALLING DOWNWARDS IN THE WATER, LET THE DIVER GO INTO AN IDLE STATE
             let dir = this.getInputDirection();
 
-            //this.parent.velocity.x += dir.x * this.parent.speed;
+            //this.parent.velocity.x += dir.x * 500;
 
             //this.owner.move(this.parent.velocity.scaled(deltaT));
-
-            if(this.owner.onGround){
-                this.finished(PlayerStates.PREVIOUS);
-            }
+            //this.finished(PlayerStates.IDLE);
         }
     }
 }
