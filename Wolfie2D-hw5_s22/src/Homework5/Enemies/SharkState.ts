@@ -12,7 +12,7 @@ import SharkController, { SharkStates } from "./SharkController";
 export default abstract class SharkState extends State {
 	owner: GameNode;
 	gravity: number = 1000;
-	maxVel: number = 100;
+	maxVel: number = 200;
 	parent: SharkController;
 	playerPos: Vec2;
 

@@ -51,23 +51,27 @@ export default class SharkController extends StateMachineAI {
 		if(!this.inWater)
 		{
 			let pos = this.owner.position;
-			if(this.tilemap.getTileAtWorldPosition(new Vec2(pos.x,pos.y+25)) != 0)
+			if(this.tilemap.getTileAtWorldPosition(new Vec2(pos.x,pos.y+128)) != 0)
 			{
 				if(this.velocity.x > 0)
 				{
-					if(this.tilemap.getTileAtWorldPosition(new Vec2(pos.x+25,pos.y)) != 0)
+					if(this.tilemap.getTileAtWorldPosition(new Vec2(pos.x+128,pos.y)) != 0)
 					{
-						this.velocity.y = -600;
+						this.velocity.y = -800;
 					}
 				}
 				else if(this.velocity.x < 0)
 				{
-					if(this.tilemap.getTileAtWorldPosition(new Vec2(pos.x-25,pos.y)) != 0)
+					if(this.tilemap.getTileAtWorldPosition(new Vec2(pos.x-128,pos.y)) != 0)
 					{
-						this.velocity.y = -600;
+						this.velocity.y = -800;
 					}
 				}
 			}
+			else{
+				this.velocity.y += this.gravity*deltaT;
+			}
+			this.owner.move(this.velocity.scaled(deltaT));
 		}
 	}
 }

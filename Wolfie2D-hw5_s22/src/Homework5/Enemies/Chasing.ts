@@ -18,23 +18,26 @@ export default class Chasing extends SharkState {
         if(this.playerPos != null)
         {
             let playerX = this.playerPos.x;
+            let playerY = this.playerPos.y;
             let sharkX = this.owner.position.x;
+            let sharkY = this.owner.position.y;
             let lookDistance = 6*128;
-            if(Math.abs(sharkX-playerX) < lookDistance)
+            let stopDistance = 3*128;
+            if(Math.abs(sharkX-playerX) < lookDistance && (Math.abs(sharkY-playerY) < stopDistance || sharkY > playerY))
             {
-                if(playerX < sharkX)
-                {
-                    this.parent.velocity.x = -this.maxVel;
-                    console.log(this.parent.velocity.x);
-                }
-                else if(playerX > sharkX)
-                {
-                    this.parent.velocity.x = this.maxVel;
-                }
-                else
-                {
-                    this.parent.velocity.x = 0;
-                }
+                    if(playerX < sharkX)
+                    {
+                        this.parent.velocity.x = -this.maxVel;
+                        console.log(this.parent.velocity.x);
+                    }
+                    else if(playerX > sharkX)
+                    {
+                        this.parent.velocity.x = this.maxVel;
+                    }
+                    else
+                    {
+                        this.parent.velocity.x = 0;
+                    }
             }
             else
             {
@@ -42,12 +45,17 @@ export default class Chasing extends SharkState {
                 let dirX = Math.random();
                 if(dirX < 0.01)
                 {
-                    this.parent.velocity.x = -this.parent.velocity.x;
+                    if(this.parent.velocity.x < 0)
+                    {
+                        this.parent.velocity.x = this.maxVel/2;
+                    }
+                    else
+                    {
+                        this.parent.velocity.x = -this.maxVel/2;
+                    }
                 }
             }
         }
-        this.parent.velocity.y += this.gravity*deltaT;
-        this.owner.move(this.parent.velocity.scaled(deltaT));
         (<Sprite>this.owner).invertX = this.parent.velocity.x<0;
 	}
 

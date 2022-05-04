@@ -320,6 +320,11 @@ export default class GameLevel extends Scene {
                 this.respawnPlayer();
             }
 
+            if(this.sharkHealth == 0 && !this.waterLevel)
+            {
+                this.gameWon();
+            }
+
             if(Input.isKeyPressed("q"))
             {
                 this.pauseGame();
@@ -354,12 +359,12 @@ export default class GameLevel extends Scene {
         this.gameLayer = this.addLayer("primary", 1);
 
         //Create pause screen
-        this.pauseScreen = this.addLayer("pause");
+        this.pauseScreen = this.addLayer("pause",2);
         this.pauseScreen.setHidden(true);
 
         let posX = this.viewport.getCenter().x;
         let posY = this.viewport.getCenter().y;
-
+        
         this.titleP = <Label>this.add.uiElement(UIElementType.LABEL, "pause", {position: new Vec2(posX, posY - 200), text: "Paused"});
         this.titleP.textColor = Color.fromStringHex("BB0070");
         this.titleP.fontSize = 100;
@@ -511,7 +516,14 @@ export default class GameLevel extends Scene {
             this.playerSpawn = Vec2.ZERO;
         }
         this.player.position.copy(this.playerSpawn);
-        this.player.addPhysics(new AABB(Vec2.ZERO, new Vec2(14, 48)));
+        if(this.waterLevel)
+        {
+            this.player.addPhysics(new AABB(Vec2.ZERO, new Vec2(48, 14)));
+        }
+        else
+        {
+            this.player.addPhysics(new AABB(Vec2.ZERO, new Vec2(14, 48)));
+        }
 
         //THIS DETERMINES WHETHER THE PLAYER IS IN WATER OR NOT (BASED ON THE ATTRIBUTE OF THE LEVEL) SO THAT PHYSICS CAN BE ADJUSTED PROPERLY
         if(this.waterLevel)
@@ -535,7 +547,7 @@ export default class GameLevel extends Scene {
         {
             this.shark = this.add.animatedSprite("shark", "primary");
             //this.shark.setGroup("shark");
-            let sharkSpawn = new Vec2(-6*128, 6*128);
+            let sharkSpawn = new Vec2(-12*128, 6*128);
             this.shark.position.copy(sharkSpawn);
         }
         else{
@@ -572,7 +584,7 @@ export default class GameLevel extends Scene {
         let mine = this.add.animatedSprite(spriteKey, "primary");
         mine.position.set(tilePos.x*128, tilePos.y*128);
         mine.scale.set(1, 1);
-        mine.addPhysics();
+        mine.addPhysics(new AABB(Vec2.ZERO, new Vec2(120, 120)));
         mine.addAI(MineController, {});
         mine.setGroup("mine");
         mine.setTrigger("player", HW5_Events.PLAYER_HIT_MINE, null);
@@ -588,7 +600,7 @@ export default class GameLevel extends Scene {
         let spike = this.add.animatedSprite(spriteKey, "primary");
         spike.position.set(tilePos.x*128, tilePos.y*128);
         spike.scale.set(1, 1);
-        spike.addPhysics();
+        spike.addPhysics(new AABB(Vec2.ZERO, new Vec2(60, 60)));
         spike.addAI(FallingSpikeController, {SpikeID: aiOptions.SpikeID, tilemap: "Background"});
         if(!this.waterLevel)
         {
@@ -602,10 +614,9 @@ export default class GameLevel extends Scene {
     {
         if(this.waterLevel){
             if(!this.levelEndReached){
-                if(player.position.x<(shark.position.x+shark.size.x/4))
+                if(player.position.x<(shark.position.x+shark.size.x/2))
                 {
-                    Input.disableInput();
-                    this.emitter.fireEvent(HW5_Events.PLAYER_KILLED, {});
+                    this.respawnPlayer();
                 }
             }
         }
@@ -685,13 +696,19 @@ export default class GameLevel extends Scene {
         //this.emitter.fireEvent(GameEventType.STOP_SOUND, {key: "level_music"});
         Input.enableInput();
         this.system.stopSystem();
-        this.sceneManager.changeToScene(MainMenu, {isGameOver: true});
+        this.sceneManager.changeToScene(MainMenu, {isGameOver: true,hasWon: false});
     }
 
     protected exitGame(): void{
         Input.enableInput();
         this.system.stopSystem();
-        this.sceneManager.changeToScene(MainMenu, {isGameOver: false});
+        this.sceneManager.changeToScene(MainMenu, {isGameOver: false,hasWon: false});
+    }
+
+    protected gameWon(): void{
+        Input.enableInput();
+        this.system.stopSystem();
+        this.sceneManager.changeToScene(MainMenu, {isGameOver: false,hasWon: true});
     }
 
     protected pauseGame(): void{

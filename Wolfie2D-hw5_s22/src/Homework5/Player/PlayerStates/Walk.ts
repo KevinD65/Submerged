@@ -41,7 +41,7 @@ export default class Walk extends OnGround {
 			this.parent.velocity.x = dir.x * 500;
 			let isJumping = false;
 			if(Input.isJustPressed("jump")){
-				this.parent.velocity.y = -600;
+				this.parent.velocity.y = -300;
 				isJumping = true;
 				this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "jump", loop: false, holdReference: false});
 			}

@@ -32,16 +32,20 @@ export default class MainMenu extends Scene {
     private logoLayer: Layer;
     private splashPress: boolean;
     private isGameOver: boolean;
+    private hasWon: boolean;
     private gameOver: Layer;
+    private winScreen: Layer;
     
 
     initScene(init: Record<string, any>): void {
         if(init != null)
         {
             this.isGameOver = init.isGameOver;
+            this.hasWon = init.hasWon;
         }
         else{
             this.isGameOver = false;
+            this.hasWon = false;
         }
     }
 
@@ -78,7 +82,7 @@ export default class MainMenu extends Scene {
 		this.lg1.position = new Vec2(this.viewport.getCenter().x,this.viewport.getCenter().y+75);
 
         this.splash = this.addUILayer("Splash");
-        if(this.isGameOver)
+        if(this.isGameOver || this.hasWon)
         {
             this.splash.setHidden(true);
         }
@@ -325,6 +329,30 @@ export default class MainMenu extends Scene {
         back4.font = "PixelSimple";
         back4.textColor = Color.fromStringHex("BB0070");
 
+        //WIN SCREEN
+        this.winScreen = this.addUILayer("WinScreen");
+        if(this.hasWon)
+        {
+            this.winScreen.setHidden(false);
+        }
+        else
+        {
+            this.winScreen.setHidden(true);
+        }
+        //Title Label
+        const title7 = <Label>this.add.uiElement(UIElementType.LABEL, "WinScreen", {position: new Vec2(size.x, size.y - 100), text: "You Beat The Terrible Shark!"});
+        title7.textColor = Color.fromStringHex("BB0070");
+        title7.fontSize = 100;
+
+        //Back Button
+        const back5 = <Button>this.add.uiElement(UIElementType.BUTTON, "WinScreen", {position: new Vec2(size.x, size.y + 225), text: "Back To Menu"});
+        back5.backgroundColor = Color.fromStringHex("00BDF9");
+        back5.borderColor = Color.fromStringHex("00BDF9");
+        back5.borderRadius = 20;
+        back5.setPadding(new Vec2(50, 10));
+        back5.font = "PixelSimple";
+        back5.textColor = Color.fromStringHex("BB0070");
+
 
 
         //THIS IS NEEDED FOR COLLISION DETECTION
@@ -363,6 +391,12 @@ export default class MainMenu extends Scene {
 
         level6.onClick = () => {
             this.sceneManager.changeToScene(BossLevel, {}, sceneOptions)
+        }
+
+        back5.onClick = () => {
+            this.main.setHidden(false);
+            this.winScreen.setHidden(true);
+            this.hasWon = false;
         }
 
         back4.onClick = () => {

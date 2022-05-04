@@ -70,8 +70,8 @@ export default class Idle extends OnGround {
 				}
 			}
 			else if(Input.isJustPressed("jump")){
-				this.parent.velocity.y = -1500;
-				this.finished("jump");
+				this.parent.velocity.y = -500;
+				//this.finished("jump");
 			}
 			else{
 				//console.log("IDLE");
