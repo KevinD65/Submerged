@@ -21,9 +21,10 @@ export default class Chasing extends SharkState {
             let playerY = this.playerPos.y;
             let sharkX = this.owner.position.x;
             let sharkY = this.owner.position.y;
-            let lookDistance = 6*128;
-            let stopDistance = 3*128;
-            if(Math.abs(sharkX-playerX) < lookDistance && (Math.abs(sharkY-playerY) < stopDistance || sharkY > playerY))
+            let lookDistanceX = 6*128;
+            let lookDistanceY = 2*128;
+            let stopDistance = 64;
+            if(Math.abs(sharkX-playerX) < lookDistanceX && (Math.abs(sharkY-playerY) < lookDistanceY || sharkY < playerY))
             {
                     if(playerX < sharkX)
                     {
@@ -34,7 +35,7 @@ export default class Chasing extends SharkState {
                     {
                         this.parent.velocity.x = this.maxVel;
                     }
-                    else
+                    else if(Math.abs(sharkX-playerX) < stopDistance)
                     {
                         this.parent.velocity.x = 0;
                     }

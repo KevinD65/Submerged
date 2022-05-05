@@ -79,6 +79,9 @@ export default abstract class PlayerState extends State {
 			this.emitter.fireEvent(HW5_Events.PLAYER_MOVE, {position: this.owner.position.clone()});
 			this.positionTimer.start();
 		}
-		this.parent.velocity.y += this.gravity*deltaT; //while in the air, the player's velocity gets changed every unit of timt due to gravity
+		if(this.parent.waterLevel)
+		{
+			this.parent.velocity.y += this.gravity*deltaT;
+		} //while in the air, the player's velocity gets changed every unit of timt due to gravity
 	}
 }

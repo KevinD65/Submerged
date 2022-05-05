@@ -532,7 +532,7 @@ export default class GameLevel extends Scene {
             this.player.inWater = false;
 
         this.player.colliderOffset.set(0, 0);
-        this.player.addAI(PlayerController, {playerType: "platformer", tilemap: "Background", color: HW5_Color.RED});
+        this.player.addAI(PlayerController, {waterLevel: this.waterLevel, playerType: "platformer", tilemap: "Background", color: HW5_Color.RED});
 
         this.player.setGroup("player");
 
@@ -552,7 +552,7 @@ export default class GameLevel extends Scene {
         }
         else{
             this.shark = this.add.animatedSprite("shark", "primary");
-            this.shark.addPhysics(new AABB(Vec2.ZERO, new Vec2(120, 120)));
+            this.shark.addPhysics(new AABB(Vec2.ZERO, new Vec2(100, 100)));
             this.shark.setGroup("player");
             this.shark.colliderOffset.set(0, 0);
             let sharkSpawn = new Vec2(13*128, 9*128);;

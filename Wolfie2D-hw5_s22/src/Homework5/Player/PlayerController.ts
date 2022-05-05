@@ -37,6 +37,8 @@ export default class PlayerController extends StateMachineAI {
     tilemap: OrthogonalTilemap;
     damageCooldown: number = -1;
     triggerCooldown: number = 200;
+    waterLevel: boolean = false;
+    gravity: number = 1200;
 
     // HOMEWORK 5 - TODO
     /**
@@ -54,6 +56,8 @@ export default class PlayerController extends StateMachineAI {
         this.initializePlatformer();
 
         this.tilemap = this.owner.getScene().getTilemap(options.tilemap) as OrthogonalTilemap;
+
+        this.waterLevel = options.waterLevel;
 
         //this.suitColor = options.color;
 
@@ -129,43 +133,45 @@ export default class PlayerController extends StateMachineAI {
         //CHECK IF THE PLAYER IS IN CONTACT WITH A SPIKED TILE
         //console.log(tileAbove);
         console.log(tileBelow);
-        if(tileAbove == 1 || tileAbove == 2 || tileAbove == 3 || tileAbove == 6 || tileAbove == 7 || tileAbove == 15 || tileAbove == 17 || tileAbove == 18){
-            if(this.damageCooldown == -1 || this.damageCooldown == 0){
-                this.damageCooldown = 30;
-                this.emitter.fireEvent(HW5_Events.PLAYER_HIT_SPIKES);
-            }
-            else{
-                this.damageCooldown -= 1;
-            }
+        if(this.waterLevel){
+            if(tileAbove == 1 || tileAbove == 2 || tileAbove == 3 || tileAbove == 6 || tileAbove == 7 || tileAbove == 15 || tileAbove == 17 || tileAbove == 18){
+                if(this.damageCooldown == -1 || this.damageCooldown == 0){
+                    this.damageCooldown = 30;
+                    this.emitter.fireEvent(HW5_Events.PLAYER_HIT_SPIKES);
+                }
+                else{
+                    this.damageCooldown -= 1;
+                }
 
-        } 
-        else if(tileBelow == 4 || tileBelow == 5 || tileBelow == 8 || tileBelow == 9 || tileBelow == 10 || tileBelow == 11 /*|| tileBelow == 26*/ || tileBelow == 27){
-            if(this.damageCooldown == -1 || this.damageCooldown == 0){
-                this.damageCooldown = 30;
-                this.emitter.fireEvent(HW5_Events.PLAYER_HIT_SPIKES);
+            } 
+            else if(tileBelow == 4 || tileBelow == 5 || tileBelow == 8 || tileBelow == 9 || tileBelow == 10 || tileBelow == 11 /*|| tileBelow == 26*/ || tileBelow == 27){
+                if(this.damageCooldown == -1 || this.damageCooldown == 0){
+                    this.damageCooldown = 30;
+                    this.emitter.fireEvent(HW5_Events.PLAYER_HIT_SPIKES);
+                }
+                else{
+                    this.damageCooldown -= 1;
+                }
             }
-            else{
-                this.damageCooldown -= 1;
+            else if(tileAhead == 1 || tileAhead == 2 || tileAhead == 3 || tileAhead == 4 || tileAhead == 6 || tileAhead == 7 || tileAhead == 8 || tileAhead == 9 || tileAhead == 10 
+                || tileAhead == 11 || tileAhead == 15 || tileAhead == 17 || tileAhead == 18 /*|| tileAhead == 26*/ || tileAhead == 27){
+                if(this.damageCooldown == -1 || this.damageCooldown == 0){
+                    this.damageCooldown = 30;
+                    this.emitter.fireEvent(HW5_Events.PLAYER_HIT_SPIKES);
+                }
+                else{
+                    this.damageCooldown -= 1;
+                }
             }
-        }
-        else if(tileAhead == 1 || tileAhead == 2 || tileAhead == 3 || tileAhead == 4 || tileAhead == 6 || tileAhead == 7 || tileAhead == 8 || tileAhead == 9 || tileAhead == 10 
-            || tileAhead == 11 || tileAhead == 15 || tileAhead == 17 || tileAhead == 18 /*|| tileAhead == 26*/ || tileAhead == 27){
-            if(this.damageCooldown == -1 || this.damageCooldown == 0){
-                this.damageCooldown = 30;
-                this.emitter.fireEvent(HW5_Events.PLAYER_HIT_SPIKES);
-            }
-            else{
-                this.damageCooldown -= 1;
-            }
-        }
-        else if(tileBehind == 1 || tileBehind == 2 || tileBehind == 3 || tileBehind == 4 || tileBehind == 5 || tileBehind == 6 || tileBehind == 7 || tileBehind == 8 
-            || tileBehind == 9 || tileBehind == 10 || tileBehind == 11 || tileBehind == 15 || tileBehind == 17 || tileBehind == 18 || tileBehind == 26 || tileBehind == 27){
-            if(this.damageCooldown == -1 || this.damageCooldown == 0){
-                this.damageCooldown = 30;
-                this.emitter.fireEvent(HW5_Events.PLAYER_HIT_SPIKES);
-            }
-            else{
-                this.damageCooldown -= 1;
+            else if(tileBehind == 1 || tileBehind == 2 || tileBehind == 3 || tileBehind == 4 || tileBehind == 5 || tileBehind == 6 || tileBehind == 7 || tileBehind == 8 
+                || tileBehind == 9 || tileBehind == 10 || tileBehind == 11 || tileBehind == 15 || tileBehind == 17 || tileBehind == 18 || tileBehind == 26 || tileBehind == 27){
+                if(this.damageCooldown == -1 || this.damageCooldown == 0){
+                    this.damageCooldown = 30;
+                    this.emitter.fireEvent(HW5_Events.PLAYER_HIT_SPIKES);
+                }
+                else{
+                    this.damageCooldown -= 1;
+                }
             }
         }
         else if(tileBelow == 28 && this.triggerCooldown == 0){ //FALLING SPIKE TRIGGER
@@ -174,6 +180,13 @@ export default class PlayerController extends StateMachineAI {
             this.emitter.fireEvent(HW5_Events.PLAYER_HIT_SWITCH, {TriggerXLocation: (this.tilemap.getColRowAt(this.owner.position)).x});
             this.triggerCooldown = 200;
         }
+
+        if(tileBelow == 0 && !this.waterLevel)
+        {
+            this.velocity.y += this.gravity*deltaT;
+        }
+
+        console.log("TileBelow:"+tileBelow);
 
         if(this.triggerCooldown > 0)
         {
