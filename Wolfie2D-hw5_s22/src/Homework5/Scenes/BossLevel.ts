@@ -16,14 +16,19 @@ export default class BossLevel extends GameLevel {
         this.load.tilemap("bossLevel", "hw5_assets/tilemaps/CaveBossLevel1.tmj");
         this.load.spritesheet("player", "hw5_assets/spritesheets/diver.json");
         this.load.spritesheet("shark", "hw5_assets/spritesheets/landshark.json");
-        //this.load.spritesheet("red", "hw5_assets/spritesheets/redBalloon.json");
-        //this.load.spritesheet("blue", "hw5_assets/spritesheets/blueBalloon.json");
         this.load.spritesheet("stalactite", "hw5_assets/spritesheets/stalactites.json")
         this.load.audio("jump", "hw5_assets/sounds/jump.wav");
         this.load.audio("switch", "hw5_assets/sounds/switch.wav");
         this.load.audio("player_death", "hw5_assets/sounds/player_death.wav");
         this.load.audio("level_music", "hw5_assets/music/gameplay.mp3");
         this.load.audio("damage","hw5_assets/sounds/dmg.wav");
+        this.load.audio("invincibilityOn", "hw5_assets/sounds/invincibilityOn.wav");
+        this.load.audio("invincibilityOff", "hw5_assets/sounds/invincibilityOff.wav");
+        this.load.audio("pause", "hw5_assets/sounds/pause.wav");
+        this.load.audio("resume", "hw5_assets/sounds/resume.wav");
+        this.load.audio("spikeFalling", "hw5_assets/sounds/spikeFalling.wav");
+        this.load.audio("sharkAttack", "hw5_assets/sounds/sharkAttack.wav");
+        this.load.audio("sharkHurt", "hw5_assets/sounds/sharkHurt.wav");
     }
 
     unloadScene(){
@@ -58,7 +63,7 @@ export default class BossLevel extends GameLevel {
         this.triggerXPositions = [5, 22, 18];
 
         //IMPORTANT: WHEN ASSIGNING SPIKE IDS, ASSIGN BASED ON INCREASING X POSITION OF THE SPIKES ON THE MAP
-        for(let pos of [new Vec2(8, 2), new Vec2(16, 2), new Vec2(19, 8)]){
+        for(let pos of [new Vec2(8, 2), new Vec2(16, 2), new Vec2(19, 7)]){
             this.addSpike("stalactite", pos, {SpikeID: pos.x});
             this.fallingSpikeXPositions.push(pos.x);
         }

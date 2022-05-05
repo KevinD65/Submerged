@@ -22,15 +22,18 @@ export default class Level4 extends GameLevel {
         this.load.tilemap("level4", "hw5_assets/tilemaps/SubmergedMap4.tmj");
         this.load.spritesheet("player", "hw5_assets/spritesheets/diver.json");
         this.load.spritesheet("shark", "hw5_assets/spritesheets/shark.json");
-        //this.load.spritesheet("green", "hw5_assets/spritesheets/greenBalloon.json");
-        //this.load.spritesheet("red", "hw5_assets/spritesheets/redBalloon.json");
-        //this.load.spritesheet("blue", "hw5_assets/spritesheets/blueBalloon.json");
         this.load.spritesheet("mine", "hw5_assets/spritesheets/mine.json")
         this.load.audio("jump", "hw5_assets/sounds/jump.wav");
         this.load.audio("switch", "hw5_assets/sounds/switch.wav");
         this.load.audio("player_death", "hw5_assets/sounds/player_death.wav");
         this.load.audio("level_music", "hw5_assets/music/gameplay.mp3");
         this.load.audio("damage","hw5_assets/sounds/dmg.wav");
+        this.load.audio("explosion", "hw5_assets/sounds/explosion.wav");
+        this.load.audio("levelComplete", "hw5_assets/sounds/levelComplete.wav");
+        this.load.audio("invincibilityOn", "hw5_assets/sounds/invincibilityOn.wav");
+        this.load.audio("invincibilityOff", "hw5_assets/sounds/invincibilityOff.wav");
+        this.load.audio("pause", "hw5_assets/sounds/pause.wav");
+        this.load.audio("resume", "hw5_assets/sounds/resume.wav");
     }
 
     unloadScene(){

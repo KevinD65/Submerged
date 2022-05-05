@@ -102,10 +102,10 @@ export default class GameLevel extends Scene {
     protected sharkCooldown: number;
     protected sharkHealth: number;
 
-    protected spikeTriggered: boolean;
+    //protected spikeTriggered: boolean;
 
     startScene(): void {
-        this.spikeTriggered = false;
+        //this.spikeTriggered = false;
         this.totalMines = 0;
         this.switchesPressed = 0;
         this.totalFallingSpikes = 0;
@@ -211,7 +211,7 @@ export default class GameLevel extends Scene {
                         {
                             this.levelEndReached = true;
                             if(!this.levelEndTimer.hasRun() && this.levelEndTimer.isStopped()){
-                                // The player has reached the end of the level
+                                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "levelComplete", loop: false, holdReference: false});
                                 this.levelEndTimer.start();
                                 this.levelEndLabel.tweens.play("slideIn");
                             }
@@ -221,19 +221,20 @@ export default class GameLevel extends Scene {
                     case HW5_Events.PLAYER_HIT_SWITCH:
                         {
                             //obtain the x position of the switch that was hit as event data
+                            //this.spikeTriggered = true;
                             let triggerXLocation = event.data.get("TriggerXLocation");
-                            console.log("BEBEEBEBE " + triggerXLocation);
+                            //console.log("BEBEEBEBE " + triggerXLocation);
                             let correspondingIndex = -1;
                             for(let t = 0; t < this.triggerXPositions.length; t++){
                                 if(this.triggerXPositions[t] == triggerXLocation){
                                     correspondingIndex = t;
                                 }
                             }
-                            console.log("CORRESPONDNG INDEX " + correspondingIndex);
+                            //console.log("CORRESPONDNG INDEX " + correspondingIndex);
                             let fallingSpikeID = this.fallingSpikeXPositions[correspondingIndex];
-                            console.log("SPIKE TO FALL HAS ID OF: " + fallingSpikeID);
+                            //console.log("SPIKE TO FALL HAS ID OF: " + fallingSpikeID);
+                            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "spikeFalling", loop: false, holdReference: false});
                             this.emitter.fireEvent(HW5_Events.SPIKES_FALL, {SpikeID: fallingSpikeID});
-                            this.spikeTriggered = true;
                         }
                         break;
                     
@@ -241,6 +242,7 @@ export default class GameLevel extends Scene {
                         {
                             if(this.sharkCooldown == 0)
                             {
+                                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "sharkAttack", loop: false, holdReference: false});
                                 this.player.animation.play("damage");
                                 this.incPlayerHealth(-1);
                                 this.sharkCooldown = 250;
@@ -251,13 +253,11 @@ export default class GameLevel extends Scene {
 
                     case HW5_Events.SPIKE_HIT_SHARK:
                         {
-                            if(this.spikeTriggered)
-                            {
-                                this.incSharkHealth(-1);
-                                this.spikeTriggered = false;
-                            }
-                            
-                            
+                            //if(this.spikeTriggered){
+                            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "sharkHurt", loop: false, holdReference: false});
+                            this.incSharkHealth(-1);
+                            //this.spikeTriggered = false;
+                            //}
                         }
                         break;
 
@@ -296,21 +296,12 @@ export default class GameLevel extends Scene {
                                 this.player.animation.play("dead");
                                 GameLevel.deathTimerFlag = true;
                                 this.deathTimer.start();
-                            }/*
-                            else if(!GameLevel.deathTimerFlag && (this.levelEndTimer.isStopped() && !this.levelEndTimer.hasRun())){
-                                console.log("HOW MANY?");
-                                this.player.animation.play("dying");
-                                this.player.animation.play("dead");
-                                GameLevel.deathTimerFlag = true;
-                                this.deathTimer.start();
-                            }*/
+                            }
                         }
                 }
             }
 
             this.checkSharkPlayerInteraction(this.player,this.shark);
-
-            console.log("cooldown "+this.sharkCooldown);
 
             if(this.deathTimer.isStopped() && GameLevel.deathTimerFlag == true){
                 this.player.animation.play("dead", true);
@@ -327,21 +318,25 @@ export default class GameLevel extends Scene {
 
             if(Input.isKeyPressed("q"))
             {
+                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "pause", loop: false, holdReference: false});
                 this.pauseGame();
                 this.paused = true;
             }
             if(Input.isKeyPressed("i")){
-                if(this.toggleInvincibility)
+                if(this.toggleInvincibility){
+                    this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "invincibilityOff", loop: false, holdReference: false});
                     this.toggleInvincibility = false;
-                else
+                }
+                else{
+                    this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "invincibilityOn", loop: false, holdReference: false});
                     this.toggleInvincibility = true;
-                console.log("INVINCIBILITY: " + this.toggleInvincibility);
+                }
             }
         }
-        else
-        {
-            if(Input.isKeyPressed("r"))
+        else{
+            if(Input.isKeyPressed("r")) //RESUME GAME
             {
+                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "resume", loop: false, holdReference: false});
                 this.unpauseGame();
                 this.paused = false;
             }
@@ -386,6 +381,7 @@ export default class GameLevel extends Scene {
         this.buttonP2.textColor = Color.fromStringHex("BB0070");
 
         this.buttonP1.onClick = () => {
+            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "resume", loop: false, holdReference: false});
             this.unpauseGame();
             this.paused = false;
         }
@@ -471,7 +467,7 @@ export default class GameLevel extends Scene {
         this.system = new HW5_ParticleSystem(100, new Vec2((5 * 32), (10 * 32)), 2000, 3, 1, 100);
         this.system.initializePool(this, "primary");
 
-        this.levelTransitionScreen = <Rect>this.add.graphic(GraphicType.RECT, "UI", {position: new Vec2(300, 200), size: new Vec2(600, 400)});
+        this.levelTransitionScreen = <Rect>this.add.graphic(GraphicType.RECT, "UI", {position: new Vec2(300, 200), size: new Vec2(5000, 2000)});
         this.levelTransitionScreen.color = new Color(34, 32, 52);
         this.levelTransitionScreen.alpha = 1;
 
@@ -642,7 +638,7 @@ export default class GameLevel extends Scene {
             mine.active = false
             console.log("EXPLODED");
             mine.animation.play("explode", false, HW5_Events.MINE_EXPLODED);
-            //this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "mine_explosion", loop: false});
+            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "explosion", loop: false});
             this.incPlayerHealth(-2);
         }
     }
@@ -706,8 +702,10 @@ export default class GameLevel extends Scene {
     }
 
     protected gameWon(): void{
-        Input.enableInput();
-        this.system.stopSystem();
+        Input.disableInput();
+        this.player.disablePhysics();
+        this.player.setAIActive(false,{});
+        this.shark.setAIActive(false,{});
         this.sceneManager.changeToScene(MainMenu, {isGameOver: false,hasWon: true});
     }
 
