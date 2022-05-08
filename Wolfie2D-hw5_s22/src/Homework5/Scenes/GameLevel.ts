@@ -102,10 +102,10 @@ export default class GameLevel extends Scene {
     protected sharkCooldown: number;
     protected sharkHealth: number;
 
-    //protected spikeTriggered: boolean;
+    protected spikeTriggered: boolean; //temporary workaround for glitch where shark dies from touching player (due to spikes being part of "player" group). To fix, make spikes their own trigger group
 
     startScene(): void {
-        //this.spikeTriggered = false;
+        this.spikeTriggered = false;
         this.totalMines = 0;
         this.switchesPressed = 0;
         this.totalFallingSpikes = 0;
@@ -221,7 +221,7 @@ export default class GameLevel extends Scene {
                     case HW5_Events.PLAYER_HIT_SWITCH:
                         {
                             //obtain the x position of the switch that was hit as event data
-                            //this.spikeTriggered = true;
+                            this.spikeTriggered = true;
                             let triggerXLocation = event.data.get("TriggerXLocation");
                             //console.log("BEBEEBEBE " + triggerXLocation);
                             let correspondingIndex = -1;
@@ -253,11 +253,11 @@ export default class GameLevel extends Scene {
 
                     case HW5_Events.SPIKE_HIT_SHARK:
                         {
-                            //if(this.spikeTriggered){
-                            this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "sharkHurt", loop: false, holdReference: false});
-                            this.incSharkHealth(-1);
-                            //this.spikeTriggered = false;
-                            //}
+                            if(this.spikeTriggered){
+                                this.emitter.fireEvent(GameEventType.PLAY_SOUND, {key: "sharkHurt", loop: false, holdReference: false});
+                                this.incSharkHealth(-1);
+                                this.spikeTriggered = false;
+                            }
                         }
                         break;
 
@@ -598,8 +598,7 @@ export default class GameLevel extends Scene {
         spike.scale.set(1, 1);
         spike.addPhysics(new AABB(Vec2.ZERO, new Vec2(60, 60)));
         spike.addAI(FallingSpikeController, {SpikeID: aiOptions.SpikeID, tilemap: "Background"});
-        if(!this.waterLevel)
-        {
+        if(!this.waterLevel){
             spike.setTrigger("player", HW5_Events.SPIKE_HIT_SHARK, null);
         }
         //spike.setGroup("mine"); //add another collision group for spikes
