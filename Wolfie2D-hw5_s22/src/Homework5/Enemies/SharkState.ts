@@ -15,6 +15,8 @@ export default abstract class SharkState extends State {
 	maxVel: number = 200;
 	parent: SharkController;
 	playerPos: Vec2;
+	damaging: boolean;
+	dying: boolean;
 
 	constructor(parent: StateMachine, owner: GameNode) {
 		super(parent);
@@ -30,6 +32,18 @@ export default abstract class SharkState extends State {
 		if(event.type == HW5_Events.PLAYER_MOVE)
 		{
 			this.playerPos = event.data.get("position");
+		}
+		if(event.type == HW5_Events.SPIKE_HIT_SHARK)
+		{
+			this.damaging = true;
+		}
+		if(event.type == HW5_Events.SHARK_HEALTHY)
+		{
+			this.damaging = false;
+		}
+		if(event.type == HW5_Events.SHARK_KILLED)
+		{
+			this.dying = true;
 		}
 	}
 

@@ -32,6 +32,9 @@ export default class SharkController extends StateMachineAI {
 		this.inWater = options.inWater;
 		this.tilemap = this.owner.getScene().getTilemap(options.tilemap) as OrthogonalTilemap;
 		this.receiver.subscribe(HW5_Events.PLAYER_MOVE);
+		this.receiver.subscribe(HW5_Events.SPIKE_HIT_SHARK);
+		this.receiver.subscribe(HW5_Events.SHARK_KILLED);
+		this.receiver.subscribe(HW5_Events.SHARK_HEALTHY);
 		if(this.inWater)
 		{
 			this.initialize(SharkStates.SWIMMING);

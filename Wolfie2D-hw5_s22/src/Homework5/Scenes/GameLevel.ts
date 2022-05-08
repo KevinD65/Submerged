@@ -101,6 +101,7 @@ export default class GameLevel extends Scene {
     //Shark land stats
     protected sharkCooldown: number;
     protected sharkHealth: number;
+    protected sharkDying: boolean;
 
     protected spikeTriggered: boolean; //temporary workaround for glitch where shark dies from touching player (due to spikes being part of "player" group). To fix, make spikes their own trigger group
 
@@ -288,6 +289,12 @@ export default class GameLevel extends Scene {
                         }
                         break;
 
+                    case HW5_Events.SHARK_DEAD:
+                        {
+                            this.gameWon();
+                        }
+                        break;
+
                     case HW5_Events.PLAYER_KILLED:
                         {
                             if(!GameLevel.deathTimerFlag && this.levelEndTimer.isStopped()){ //we check if the levelEndTimer has run in case a player dies after reaching the level end
@@ -311,9 +318,10 @@ export default class GameLevel extends Scene {
                 this.respawnPlayer();
             }
 
-            if(this.sharkHealth == 0 && !this.waterLevel)
+            if(this.sharkHealth == 0 && !this.waterLevel && !this.sharkDying)
             {
-                this.gameWon();
+                this.sharkDying = true;
+                this.emitter.fireEvent(HW5_Events.SHARK_KILLED);
             }
 
             if(Input.isKeyPressed("q"))
@@ -415,7 +423,8 @@ export default class GameLevel extends Scene {
             HW5_Events.LEVEL_END,
             HW5_Events.PLAYER_KILLED,
             HW5_Events.SHARK_HIT_PLAYER,
-            HW5_Events.SPIKE_HIT_SHARK
+            HW5_Events.SPIKE_HIT_SHARK,
+            HW5_Events.SHARK_DEAD
         ]);
     }
 
@@ -556,6 +565,7 @@ export default class GameLevel extends Scene {
             this.shark.setTrigger("player", HW5_Events.SHARK_HIT_PLAYER, null);
             this.sharkCooldown = 0;
             this.sharkHealth = 3;
+            this.sharkDying = false;
         }
         this.shark.addAI(SharkController, {inWater: this.waterLevel, tilemap: "Background"});
     }
