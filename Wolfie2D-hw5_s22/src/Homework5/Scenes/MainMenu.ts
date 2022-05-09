@@ -174,7 +174,7 @@ export default class MainMenu extends Scene {
         info4.fontSize = 20;
 
         //Cheat Codes
-        const cheatText1 = "Cheat Codes: X (invincible to obstacles), S (skip to boss), M (skip to middle of level), K (insta-kill boss)";
+        const cheatText1 = "Cheat Codes: I (invincible to obstacles), 1-6 (skip to levels 1-6)";
         const info5 = <Label>this.add.uiElement(UIElementType.LABEL, "About", {position: new Vec2(size.x, size.y+100), text: cheatText1});
         info5.textColor = Color.fromStringHex("BB0070");
         info5.fontSize = 20;
