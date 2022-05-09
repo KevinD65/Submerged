@@ -198,32 +198,32 @@ export default class MainMenu extends Scene {
         title4.fontSize = 100;
 
         //Control Labels
-        const controlText1 = "Swim/Walk Right: Right Arrow Key";
+        const controlText1 = "Swim/Walk Right: D";
         const control1 = <Label>this.add.uiElement(UIElementType.LABEL, "Controls", {position: new Vec2(size.x, size.y-20), text: controlText1});
         control1.textColor = Color.fromStringHex("BB0070");
         control1.fontSize = 20;
 
-        const controlText2 = "Swim/Walk Left: Left Arrow Key";
+        const controlText2 = "Swim/Walk Left: A";
         const control2 = <Label>this.add.uiElement(UIElementType.LABEL, "Controls", {position: new Vec2(size.x, size.y+20), text: controlText2});
         control2.textColor = Color.fromStringHex("BB0070");
         control2.fontSize = 20;
 
-        const controlText3 = "Swim Up: Up Arrow Key";
+        const controlText3 = "Swim Up: W";
         const control3 = <Label>this.add.uiElement(UIElementType.LABEL, "Controls", {position: new Vec2(size.x, size.y+60), text: controlText3});
         control3.textColor = Color.fromStringHex("BB0070");
         control3.fontSize = 20;
 
-        const controlText4 = "Swim Down: Down Arrow Key";
+        const controlText4 = "Swim Down: S";
         const control4 = <Label>this.add.uiElement(UIElementType.LABEL, "Controls", {position: new Vec2(size.x, size.y+100), text: controlText4});
         control4.textColor = Color.fromStringHex("BB0070");
         control4.fontSize = 20;
 
-        const controlText5 = "Swim/Walk Right: Right Arrow Key";
+        const controlText5 = "Pause Game: Q";
         const control5 = <Label>this.add.uiElement(UIElementType.LABEL, "Controls", {position: new Vec2(size.x, size.y+140), text: controlText5});
         control5.textColor = Color.fromStringHex("BB0070");
         control5.fontSize = 20;
 
-        const controlText6 = "Pause Game: Q";
+        const controlText6 = "Resume Game: R";
         const control6 = <Label>this.add.uiElement(UIElementType.LABEL, "Controls", {position: new Vec2(size.x, size.y+180), text: controlText6});
         control6.textColor = Color.fromStringHex("BB0070");
         control6.fontSize = 20;
